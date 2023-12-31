@@ -11,6 +11,8 @@ from app.auth.des_util import raw_str_enc
 from app.auth.encrypt_util import Encryptor
 from app.dao.user import UpdateInfo, UserManager
 
+from app.service.message import MessageService
+
 
 class Login:
     def __init__(self, username, password):
@@ -18,6 +20,7 @@ class Login:
         self.password = password
         self.session = requests.Session()
         self.login_url = app.config.CAS_URL
+        self.message = MessageService()
 
     def _get_lt_execution_values(self):
         response = self.session.get(self.login_url)
@@ -35,11 +38,11 @@ class Login:
     def login(self):
         username_verify = str(self.username)
         if len(username_verify) < 2:
-            return {'msg': '请输入正确的CUID'}, 404
+            return self.message.send_error_message('请输入CUID/工号')
         if username_verify[:2].isdigit() and username_verify[:2] != '10':
-            return {'msg': '请输入CUID，而不是学号'}, 404
+            return self.message.send_error_message('请输入CUID/工号，而不是学号')
         if not self.password:
-            return {'msg': '请输入密码'}, 404
+            return self.message.send_error_message('请输入密码')
         manager = UserManager(self.username)
         user = manager.get_user_info()
         encryptor = Encryptor()
@@ -61,7 +64,7 @@ class Login:
         }
         response = self.session.post(self.login_url, data=data, headers=post_headers)
         if "我的账户" not in response.text:
-            return {'msg': '用户名或密码错误'}, 401
+            return self.message.send_error_message('用户名或密码错误')
         else:
             return self.fetch_data()
 
@@ -90,20 +93,20 @@ class Login:
             if not uid:
                 uid = soup.find('td', class_='title', text='工号：').find_next('td').text.strip()
                 if not uid:
-                    return {'msg': '校园网信息请求失败'}, 404
+                    return self.message.send_error_message('校园网信息请求失败')
                 upd_info = UpdateInfo(cuid, uid, name, password, "teacher", '', '')
                 upd_info.update_user_info()
                 login_user(User(cuid))
-                return {'msg': '登录成功'}, 200
+                return self.message.send_message('登录成功')
             department_name = soup.find('td', class_='title', text='院系：').find_next('td').text.strip()
             class_name = soup.find('td', class_='title', text='所属班级：').find_next('td').text.strip()
             upd_info = UpdateInfo(cuid, uid, name, password, "student", class_name, department_name)
             upd_info.update_user_info()
             login_user(User(cuid))
-            return {'msg': '登录成功'}, 200
+            return self.message.send_message('登录成功')
         else:
-            return {'msg': '校园网信息请求失败'}, 404
+            return self.message.send_error_message('校园网信息请求失败')
 
     def login_direct(self):
         login_user(User(self.username))
-        return {'msg': '登录成功'}, 200
+        return self.message.send_message('登录成功')
