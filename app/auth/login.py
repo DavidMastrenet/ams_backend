@@ -33,10 +33,10 @@ class Login:
         return lt_value, execution
 
     def login(self):
-        self.username = str(self.username)
-        if len(self.username) < 2:
+        username_verify = str(self.username)
+        if len(username_verify) < 2:
             return {'msg': '请输入正确的CUID'}, 404
-        if self.username[:2].isdigit() and self.username[:2] != '10':
+        if username_verify[:2].isdigit() and username_verify[:2] != '10':
             return {'msg': '请输入CUID，而不是学号'}, 404
         if not self.password:
             return {'msg': '请输入密码'}, 404
@@ -48,8 +48,8 @@ class Login:
                 self.login_direct()
         lt_value, execution = self._get_lt_execution_values()
         data = {
-            "rsa": raw_str_enc(self.username + self.password + lt_value),
-            "ul": len(self.username),
+            "rsa": raw_str_enc(username_verify + self.password + lt_value),
+            "ul": len(username_verify),
             "pl": len(self.password),
             "lt": lt_value,
             "execution": execution,

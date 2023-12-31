@@ -78,9 +78,6 @@ class UserManager:
                 class_name = class_obj.class_name
             user_info.class_name = class_name
 
-            # 数据脱敏
-            user_info.password = None
-
         return user_info
 
     def get_user_role(self):
