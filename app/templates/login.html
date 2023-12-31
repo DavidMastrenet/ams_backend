@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="zh">
+  <head>
+    <meta charset="UTF-8" />
+    <title>登录 | {{ env_name }}</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1"
+    />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/amis/3.4.0/sdk.css" />
+    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/amis/3.4.0/helper.css" />
+    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/amis/3.4.0/iconfont.css" />
+    <style>
+      html,
+      body,
+      .app-wrapper {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root" class="app-wrapper"></div>
+    <script src="https://cdn.bootcdn.net/ajax/libs/amis/3.4.0/sdk.js"></script>
+    <script type="text/javascript">
+      (function () {
+        let amis = amisRequire('amis/embed');
+        let amisJSON = {
+          type: 'page',
+          title: '登录',
+          body: {
+            type: 'form',
+            redirect: "/",
+            title: "请使用CUID/工号登录",
+            mode: 'horizontal',
+            api: '/api/login',
+            body: [
+              {
+                label: '账号',
+                type: 'input-number',
+                name: 'username'
+              },
+              {
+                label: '密码',
+                type: 'input-password',
+                name: 'password'
+              }
+            ],
+            actions: [
+              {
+                type: "submit",
+                label: "登录"
+              }
+            ]
+          }
+        };
+        let amisScoped = amis.embed('#root', amisJSON);
+      })();
+    </script>
+  </body>
+</html>
+

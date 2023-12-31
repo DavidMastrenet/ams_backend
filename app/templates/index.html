@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8"/>
+    <title>个人中心 | {{env_name}}</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1, maximum-scale=1"
+    />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
+    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/amis/3.4.0/sdk.css"/>
+    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/amis/3.4.0/helper.css"/>
+    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/amis/3.4.0/iconfont.css"/>
+    <!-- 这是默认主题所需的，如果是其他主题则不需要 -->
+    <!-- 从 1.1.0 开始 sdk.css 将不支持 IE 11，如果要支持 IE11 请引用这个 css，并把前面那个删了 -->
+    <!-- <link rel="stylesheet" href="sdk-ie11.css" /> -->
+    <!-- 不过 amis 开发团队几乎没测试过 IE 11 下的效果，所以可能有细节功能用不了，如果发现请报 issue -->
+    <style>
+        html,
+        body,
+        .app-wrapper {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+</head>
+<body>
+<div id="root" class="app-wrapper"></div>
+<script src="https://cdn.bootcdn.net/ajax/libs/amis/3.4.0/sdk.js"></script>
+<script type="text/javascript">
+    (function () {
+        let amis = amisRequire('amis/embed');
+        let amisJSON = {
+            "type": "page",
+            "title": "个人中心",
+            "body": [
+                {
+                    "type": "tpl",
+                    "tpl": "姓名：{{username}}<br>\n用户类型：{{user_type}}<br>\n学院：{{department_name}}<br>\n班级：{{class_name}}<br>",
+                    "wrapperComponent": "",
+                    "inline": false,
+                    "id": "u:55e7a2ca8410"
+                }
+            ],
+            "id": "u:b168f606942f",
+            "aside": [],
+            "toolbar": [
+                {
+                    "type": "tpl",
+                    "tpl": "{{username}}",
+                    "inline": true,
+                    "wrapperComponent": "",
+                    "id": "u:347491b018eb"
+                },
+                {
+                    "type": "button",
+                    "label": "退出登录",
+                    "onEvent": {
+                        "click": {
+                            "actions": [
+                                {
+                                    "ignoreError": false,
+                                    "actionType": "url",
+                                    "args": {
+                                        "url": "/api/logout",
+                                        "blank": false
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "id": "u:fb24862f2649",
+                    "confirmText": "是否确认退出登录？"
+                }
+            ]
+        };
+        let amisScoped = amis.embed('#root', amisJSON);
+    })();
+</script>
+</body>
+</html>
+
