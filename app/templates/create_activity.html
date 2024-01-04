@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8"/>
+    <title>创建活动 | {{ env_name }}</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1, maximum-scale=1"
+    />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
+    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/amis/3.4.0/sdk.css"/>
+    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/amis/3.4.0/helper.css"/>
+    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/amis/3.4.0/iconfont.css"/>
+    <style>
+        html,
+        body,
+        .app-wrapper {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+</head>
+<body>
+<div id="root" class="app-wrapper"></div>
+<script src="https://cdn.bootcdn.net/ajax/libs/amis/3.4.0/sdk.js"></script>
+<script type="text/javascript">
+    (function () {
+        let amis = amisRequire('amis/embed');
+        let amisJSON = {
+            "type": "page",
+            "title": "创建活动",
+            "body": [
+                {
+                    "id": "u:5c2ce1eac607",
+                    "type": "form",
+                    "title": "创建活动",
+                    "mode": "horizontal",
+                    "dsType": "api",
+                    "feat": "Insert",
+                    "body": [
+                        {
+                            "name": "name",
+                            "label": "活动名称",
+                            "type": "input-text",
+                            "id": "u:9cc01e71b3d3"
+                        },
+                        {
+                            "name": "time",
+                            "label": "活动时间",
+                            "type": "input-datetime",
+                            "id": "u:c8a95293f3ea",
+                            "placeholder": "请选择时间",
+                            "valueFormat": "YYYY-MM-DD HH:mm:ss",
+                            "displayFormat": "YYYY-MM-DD HH:mm:ss",
+                            "minDate": "",
+                            "maxDate": "",
+                            "value": ""
+                        },
+                        {
+                            "name": "location",
+                            "label": "活动地点",
+                            "type": "input-text",
+                            "id": "u:2403530a8434"
+                        },
+                        {
+                            "type": "select",
+                            "label": "是否允许报名",
+                            "name": "can_sign_up",
+                            "options": [
+                                {
+                                    "label": "允许",
+                                    "value": "yes"
+                                },
+                                {
+                                    "label": "条件允许",
+                                    "value": "conditional"
+                                },
+                                {
+                                    "label": "不允许",
+                                    "value": "no"
+                                }
+                            ],
+                            "id": "u:eb55dd8176a3",
+                            "multiple": false,
+                            "value": "no"
+                        }
+                    ],
+                    "api": {
+                        "url": "/api/activity/create",
+                        "method": "post"
+                    },
+                    "actions": [
+                        {
+                            "type": "button",
+                            "label": "创建",
+                            "onEvent": {
+                                "click": {
+                                    "actions": [
+                                        {
+                                            "actionType": "submit",
+                                            "componentId": "u:5c2ce1eac607"
+                                        }
+                                    ]
+                                }
+                            },
+                            "level": "primary",
+                            "id": "u:cd4fd1013602"
+                        }
+                    ],
+                    "resetAfterSubmit": true,
+                    "rules": []
+                }
+            ],
+            "id": "u:aa186f08a018"
+        };
+        let amisScoped = amis.embed('#root', amisJSON);
+    })();
+</script>
+</body>
+</html>
+

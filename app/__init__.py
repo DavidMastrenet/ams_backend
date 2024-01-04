@@ -31,9 +31,12 @@ def unauthorized():
 
 from app.controller import fe_bp
 from app.controller import user_bp
+from app.controller import activity_bp
 
 from app.controller import frontend
 from app.controller import user
+from app.controller import activity
 
 app.register_blueprint(fe_bp)
 app.register_blueprint(user_bp)
+app.register_blueprint(activity_bp)

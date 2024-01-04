@@ -21,3 +21,9 @@ def login():
     if current_user.is_authenticated:
         return redirect('/')
     return render_template('login.html', env_name=app.config.ENV_NAME)
+
+
+@fe_bp.route('/create_activity')
+@login_required
+def create_activity():
+    return render_template('create_activity.html', env_name=app.config.ENV_NAME)
