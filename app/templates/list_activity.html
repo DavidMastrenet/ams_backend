@@ -151,7 +151,7 @@
                                                     "label": "描述",
                                                     "name": "description",
                                                     "type": "static",
-                                                    "id": "u:09feec1b27c4",
+                                                    "id": "u:6ae97b9d3085",
                                                     "quickEdit": false,
                                                     "popOver": false,
                                                     "copyable": false
@@ -182,6 +182,15 @@
                                                     "name": "end_register",
                                                     "type": "static",
                                                     "id": "u:4d31189c16cb",
+                                                    "quickEdit": false,
+                                                    "popOver": false,
+                                                    "copyable": false
+                                                },
+                                                {
+                                                    "label": "最大参加人数",
+                                                    "name": "max_register",
+                                                    "type": "static",
+                                                    "id": "u:09feec1b27c4",
                                                     "quickEdit": false,
                                                     "popOver": false,
                                                     "copyable": false
@@ -246,15 +255,8 @@
                                     "body": [
                                         {
                                             "type": "form",
-                                            "api": "xxx/update",
+                                            "api": "/api/activity/edit/${activity_id}",
                                             "body": [
-                                                {
-                                                    "label": "序号",
-                                                    "name": "activity_id",
-                                                    "type": "input-text",
-                                                    "id": "u:02c6ac769793",
-                                                    "hidden": true
-                                                },
                                                 {
                                                     "label": "名称",
                                                     "name": "name",
@@ -265,12 +267,12 @@
                                                     "label": "地点",
                                                     "name": "location",
                                                     "type": "input-text",
-                                                    "id": "u:e3bc4e4633d4"
+                                                    "id": "u:06ffdba7d737"
                                                 },
                                                 {
-                                                    "type": "input-datetime",
                                                     "label": "时间",
                                                     "name": "time",
+                                                    "type": "input-datetime",
                                                     "id": "u:de4fa10545ae",
                                                     "placeholder": "请选择日期以及时间",
                                                     "valueFormat": "YYYY-MM-DD HH:mm:ss",
@@ -280,9 +282,9 @@
                                                     "value": ""
                                                 },
                                                 {
+                                                    "type": "checkboxes",
                                                     "label": "分类",
                                                     "name": "category",
-                                                    "type": "checkboxes",
                                                     "id": "u:1d587486b4ef",
                                                     "multiple": true,
                                                     "source": {
@@ -296,9 +298,9 @@
                                                     "valueField": "category_id"
                                                 },
                                                 {
-                                                    "type": "input-text",
                                                     "label": "描述",
                                                     "name": "description",
+                                                    "type": "input-text",
                                                     "id": "u:cf755e023485"
                                                 },
                                                 {
@@ -328,18 +330,6 @@
                                                     "label": "开始报名时间",
                                                     "name": "start_register",
                                                     "id": "u:ca987a2db0d4",
-                                                    "placeholder": "请选择日期以及时间",
-                                                    "valueFormat": "YYYY-MM-DD HH:mm:ss",
-                                                    "displayFormat": "YYYY-MM-DD HH:mm:ss",
-                                                    "minDate": "",
-                                                    "maxDate": "",
-                                                    "value": ""
-                                                },
-                                                {
-                                                    "type": "input-datetime",
-                                                    "label": "截止报名时间",
-                                                    "name": "end_register",
-                                                    "id": "u:81e7128f9781",
                                                     "value": "",
                                                     "placeholder": "请选择日期以及时间",
                                                     "valueFormat": "YYYY-MM-DD HH:mm:ss",
@@ -348,9 +338,31 @@
                                                     "maxDate": ""
                                                 },
                                                 {
+                                                    "type": "input-datetime",
+                                                    "label": "截止报名时间",
+                                                    "name": "end_register",
+                                                    "id": "u:81e7128f9781",
+                                                    "placeholder": "请选择日期以及时间",
+                                                    "valueFormat": "YYYY-MM-DD HH:mm:ss",
+                                                    "displayFormat": "YYYY-MM-DD HH:mm:ss",
+                                                    "minDate": "",
+                                                    "maxDate": "",
+                                                    "value": ""
+                                                },
+                                                {
+                                                    "type": "input-number",
+                                                    "label": "最大参加人数",
+                                                    "name": "max_register",
+                                                    "id": "u:e5416a6b0e4a",
+                                                    "keyboard": true,
+                                                    "step": 1,
+                                                    "min": 0
+                                                },
+                                                {
                                                     "type": "select",
                                                     "label": "能否退出",
                                                     "name": "can_quit",
+                                                    "id": "u:b1136befe721",
                                                     "options": [
                                                         {
                                                             "label": "是",
@@ -361,7 +373,6 @@
                                                             "value": false
                                                         }
                                                     ],
-                                                    "id": "u:b1136befe721",
                                                     "multiple": false,
                                                     "value": ""
                                                 }

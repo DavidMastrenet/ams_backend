@@ -51,6 +51,7 @@ class Activity(db.Model):
     can_sign_up = db.Column(db.Enum('no', 'yes', 'conditional'), nullable=False)
     start_register = db.Column(db.DateTime)
     end_register = db.Column(db.DateTime)
+    max_register = db.Column(db.Integer)
     can_quit = db.Column(db.Boolean, default=True)
     description = db.Column(db.Text)
     organizer_id = db.Column(db.Integer, db.ForeignKey('user_info.cuid'))

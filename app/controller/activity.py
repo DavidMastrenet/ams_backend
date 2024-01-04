@@ -71,6 +71,7 @@ def create_activity():
     activity_service.create_activity(name, time, location, can_sign_up, organizer_id)
     return message_service.send_message('活动创建成功')
 
+
 @activity_bp.route('/api/activity/category', methods=['GET'])
 @login_required
 def get_category_list():
@@ -89,3 +90,42 @@ def get_category_list():
     activity_service = ActivityService(current_user.id)
     category_list = activity_service.get_catogery_list()
     return jsonify(category_list)
+
+
+@activity_bp.route('/api/activity/edit/<activity_id>', methods=['POST'])
+@login_required
+def edit_activity(activity_id):
+    """
+    修改活动信息
+
+    ---
+    tags:
+      - 活动
+    security:
+      - BearerAuth: []
+    parameters:
+      - in: body
+        name: info
+        description: 活动信息
+    responses:
+      200:
+        description: 活动修改成功
+      401:
+        description: 无权限修改活动
+    """
+    activity_service = ActivityService(current_user.id)
+    if not activity_service.get_activity_permission(activity_id):
+        return message_service.send_unauthorized_message('无权限修改活动')
+    name = request.json.get('name')
+    location = request.json.get('location')
+    time = request.json.get('time')
+    category = request.json.get('category')
+    description = request.json.get('description')
+    can_sign_up = request.json.get('can_sign_up')
+    start_register = request.json.get('start_register')
+    end_register = request.json.get('end_register')
+    max_register = request.json.get('max_register')
+    can_quit = request.json.get('can_quit')
+    activity_service.edit_activity(activity_id, name, location, time, category, description, can_sign_up, start_register,
+                                   end_register, max_register, can_quit)
+    return message_service.send_message('活动修改成功')

@@ -26,4 +26,11 @@ class ActivityService:
 
     def get_catogery_list(self):
         self.activity_manager = ActivityManager(self.cuid, self.activity_id)
-        return self.activity_manager.get_catogery_list()
+        return self.activity_manager.get_category_list()
+
+    def edit_activity(self, activity_id ,name, location, time, category, description, can_sign_up, start_register, end_register,
+                      max_register, can_quit):
+        self.activity_id = activity_id
+        self.activity_manager = ActivityManager(self.cuid, self.activity_id)
+        return self.activity_manager.edit_activity(name, location, time, category, description, can_sign_up, start_register, end_register,
+                      max_register, can_quit)

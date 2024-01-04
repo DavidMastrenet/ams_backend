@@ -66,6 +66,7 @@ CREATE TABLE activity
     can_sign_up    ENUM ('no', 'yes', 'conditional') NOT NULL,
     start_register DATETIME,
     end_register   DATETIME,
+    max_register   INT,
     can_quit       BOOLEAN DEFAULT TRUE,
     description    TEXT,
     organizer_id   INT,
