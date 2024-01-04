@@ -1,4 +1,6 @@
 from app import app
+from flasgger import Swagger
 
 if __name__ == '__main__':
-    app.run(debug=True, port=8011, host='0.0.0.0')
+    Swagger(app)
+    app.run(debug=True, host='0.0.0.0', port=8011)
