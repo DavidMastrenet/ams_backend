@@ -28,8 +28,10 @@ def login():
     responses:
       200:
         description: 登录成功
+      401:
+        description: 用户名或密码错误
       404:
-        description: 用户名或密码错误、校园网接口请求失败
+        description: 输入格式不正确、校园网接口请求失败
     """
     username = request.json.get('username')
     password = request.json.get('password')

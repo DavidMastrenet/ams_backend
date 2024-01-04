@@ -64,7 +64,7 @@ class Login:
         }
         response = self.session.post(self.login_url, data=data, headers=post_headers)
         if "我的账户" not in response.text:
-            return self.message.send_error_message('用户名或密码错误')
+            return self.message.send_unauthorized_message('用户名或密码错误')
         else:
             return self.fetch_data()
 
