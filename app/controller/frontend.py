@@ -27,3 +27,9 @@ def login():
 @login_required
 def create_activity():
     return render_template('create_activity.html', env_name=app.config.ENV_NAME)
+
+
+@fe_bp.route('/list_activity')
+@login_required
+def list_activity():
+    return render_template('list_activity.html', env_name=app.config.ENV_NAME)

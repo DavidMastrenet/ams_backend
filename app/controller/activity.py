@@ -1,4 +1,4 @@
-from flask import request
+from flask import request, jsonify
 from flask_login import login_required, current_user
 
 from app.controller import activity_bp
@@ -7,6 +7,26 @@ from app.service.activity import ActivityService
 from app.service.message import MessageService
 
 message_service = MessageService()
+
+
+@activity_bp.route('/api/activity/list', methods=['GET'])
+@login_required
+def get_activity_list():
+    """
+    获取活动列表
+
+    ---
+    tags:
+      - 活动
+    security:
+      - BearerAuth: []
+    responses:
+      200:
+        description: 活动列表
+    """
+    activity_service = ActivityService(current_user.id)
+    activity_list = activity_service.get_valid_activity()
+    return jsonify(activity_list)
 
 
 @activity_bp.route('/api/activity/create', methods=['POST'])
@@ -50,3 +70,30 @@ def create_activity():
     organizer_id = current_user.id
     activity_service.create_activity(name, time, location, can_sign_up, organizer_id)
     return message_service.send_message('活动创建成功')
+
+
+@activity_bp.route('/api/activity/info/<activity_id>', methods=['GET'])
+@login_required
+def get_activity_info(activity_id):
+    """
+    获取活动信息
+
+    ---
+    tags:
+      - 活动
+    security:
+      - BearerAuth: []
+    parameters:
+      - in: path
+        name: activity_id
+        description: 活动id
+        required: true
+        schema:
+          type: integer
+    responses:
+      200:
+        description: 活动信息
+    """
+    activity_service = ActivityService(current_user.id)
+    activity_info = activity_service.get_activity_info(activity_id)
+    return jsonify(activity_info)
