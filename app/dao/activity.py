@@ -1,5 +1,6 @@
 from app import db
-from app.models import UserInfo, UserRole, Activity, ActivityCategory, ActivityCategoryMapping, ActivityPermission, GroupActivity
+from app.models import UserInfo, UserRole, Activity, ActivityCategory, ActivityCategoryMapping, ActivityPermission, \
+    GroupActivity
 from datetime import datetime
 
 
@@ -58,7 +59,21 @@ class ActivityManager:
         valid_activities = []
 
         def append():
-            valid_activities.append({'activity_id': activity.activity_id, 'name': activity.name, 'location': activity.location, 'time': activity.time})
+            organizer_name = UserInfo.query.filter_by(cuid=Activity.organizer_id).first().username
+            category_list = []
+            category_list_query = ActivityCategoryMapping.query.filter_by(activity_id=Activity.activity_id).all()
+            if category_list_query is None:
+                category_list.append('未分类')
+            else:
+                for category in category_list_query:
+                    category_list.append({'category_id': category.category_id, 'category_name': ActivityCategory.query.filter_by(category_id=category.category_id).first().category_name})
+            category_display = []
+            for category in category_list:
+                category_display.append(category['category_name'])
+            valid_activities.append({'activity_id': activity.activity_id, 'name': activity.name, 'category_display':category_display,
+                                     'location': activity.location, 'time': activity.time.strftime('%Y-%m-%d %H:%M:%S'), 'description': activity.description,
+                                     'can_sign_up': activity.can_sign_up, 'can_quit': activity.can_quit, 'organizer_name': organizer_name,
+                                     'start_register': activity.start_register, 'end_register': activity.end_register, 'category': category_list})
 
         # 列出当前用户有效的全局权限
         user_role = UserRole.query.filter_by(cuid=self.cuid).all()
@@ -101,27 +116,9 @@ class ActivityManager:
 
         return valid_activities
 
-    def get_activity_info(self, activity_id):
-        activity = Activity.query.filter_by(activity_id=activity_id).first()
-        activity_info = {}
-        if activity is not None:
-            activity_info['activity_id'] = activity.activity_id
-            activity_info['name'] = activity.name
-            activity_info['location'] = activity.location
-            activity_info['time'] = activity.time
-            activity_info['can_sign_up'] = activity.can_sign_up
-            activity_info['start_register'] = activity.start_register
-            activity_info['end_register'] = activity.end_register
-            activity_info['can_quit'] = activity.can_quit
-            activity_info['description'] = activity.description
-            # 显示名字
-            activity_info['organizer_name'] = UserInfo.query.filter_by(cuid=activity.organizer_id).first().username
-            # 查询活动所在的全部分类
-            activity_category = ActivityCategoryMapping.query.filter_by(activity_id=activity_id).all()
-            activity_info['category'] = []
-            if activity_category is not None:
-                for category in activity_category:
-                    activity_info['category'].append(ActivityCategory.query.filter_by(category_id=category.category_id).first().category_name)
-            else:
-                activity_info['category'].append('未分类')
-        return activity_info
+    def get_catogery_list(self):
+        category_list = []
+        category_list_query = ActivityCategory.query.all()
+        for category in category_list_query:
+            category_list.append({'category_id': category.category_id, 'category_name': category.category_name})
+        return category_list

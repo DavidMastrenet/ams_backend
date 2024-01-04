@@ -2,14 +2,13 @@ from flask import Flask, redirect
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='static')
 app.config.from_object('app.config')
 
 db = SQLAlchemy(app)
 
 login_manager = LoginManager(app)
 login_manager.login_view = 'auth.login'
-
 
 class User(UserMixin):
     def __init__(self, id):

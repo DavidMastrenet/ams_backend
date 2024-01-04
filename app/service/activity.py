@@ -24,7 +24,6 @@ class ActivityService:
         self.activity_manager = ActivityManager(self.cuid, self.activity_id)
         return self.activity_manager.get_valid_activity()
 
-    def get_activity_info(self, activity_id):
-        self.activity_id = activity_id
+    def get_catogery_list(self):
         self.activity_manager = ActivityManager(self.cuid, self.activity_id)
-        return self.activity_manager.get_activity_info(self.activity_id)
+        return self.activity_manager.get_catogery_list()

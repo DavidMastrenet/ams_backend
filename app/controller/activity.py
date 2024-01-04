@@ -71,29 +71,21 @@ def create_activity():
     activity_service.create_activity(name, time, location, can_sign_up, organizer_id)
     return message_service.send_message('活动创建成功')
 
-
-@activity_bp.route('/api/activity/info/<activity_id>', methods=['GET'])
+@activity_bp.route('/api/activity/category', methods=['GET'])
 @login_required
-def get_activity_info(activity_id):
+def get_category_list():
     """
-    获取活动信息
+    获取活动分类列表
 
     ---
     tags:
       - 活动
     security:
       - BearerAuth: []
-    parameters:
-      - in: path
-        name: activity_id
-        description: 活动id
-        required: true
-        schema:
-          type: integer
     responses:
       200:
-        description: 活动信息
+        description: 活动分类列表
     """
     activity_service = ActivityService(current_user.id)
-    activity_info = activity_service.get_activity_info(activity_id)
-    return jsonify(activity_info)
+    category_list = activity_service.get_catogery_list()
+    return jsonify(category_list)
