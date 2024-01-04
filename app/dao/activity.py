@@ -1,6 +1,6 @@
 from app import db
 from app.models import UserInfo, UserRole, Activity, ActivityCategory, ActivityCategoryMapping, ActivityPermission, \
-    GroupActivity
+    GroupActivity, UserActivity
 from datetime import datetime
 
 
@@ -58,7 +58,7 @@ class ActivityManager:
     def get_valid_activity(self):
         valid_activities = []
 
-        def append():
+        def append(activity):
             organizer_name = UserInfo.query.filter_by(cuid=Activity.organizer_id).first().username
             category_list = []
             category_list_query = ActivityCategoryMapping.query.filter_by(activity_id=Activity.activity_id).all()
@@ -72,13 +72,30 @@ class ActivityManager:
             category_display = []
             for category in category_list:
                 category_display.append(category['category_name'])
+
+            group_activity = GroupActivity.query.filter_by(activity_id=activity.activity_id).all()
+            is_participate = 0
+            for group in group_activity:
+                if group.department_id == UserInfo.query.filter_by(cuid=self.cuid).first().department_id or \
+                        group.class_id == UserInfo.query.filter_by(cuid=self.cuid).first().class_id:
+                    is_participate = 1
+            for user_activity in UserActivity.query.filter_by(cuid=self.cuid).all():
+                if user_activity.activity_id == activity.activity_id:
+                    is_participate = 1
+
+            # 格式化时间
+            if activity.start_register:
+                activity.start_register = activity.start_register.strftime('%Y-%m-%d %H:%M:%S')
+            if activity.end_register:
+                activity.end_register = activity.end_register.strftime('%Y-%m-%d %H:%M:%S')
+
             valid_activities.append(
                 {'activity_id': activity.activity_id, 'name': activity.name, 'category_display': category_display,
                  'location': activity.location, 'time': activity.time.strftime('%Y-%m-%d %H:%M:%S'),
                  'description': activity.description,
                  'can_sign_up': activity.can_sign_up, 'can_quit': activity.can_quit, 'organizer_name': organizer_name,
                  'start_register': activity.start_register, 'end_register': activity.end_register,
-                 'max_register': activity.max_register, 'category': category_list})
+                 'max_register': activity.max_register, 'category': category_list, 'is_participate': is_participate})
 
         # 列出当前用户有效的全局权限
         user_role = UserRole.query.filter_by(cuid=self.cuid).all()
@@ -86,13 +103,13 @@ class ActivityManager:
             if role.start_date <= datetime.now().date() <= role.end_date:
                 if role.role == 'school_admin':
                     for activity in Activity.query.all():
-                        append()
+                        append(activity)
                     return valid_activities
 
         # 老师直接给出所有的
         if UserInfo.query.filter_by(cuid=self.cuid).first().user_type == 'teacher':
             for activity in Activity.query.all():
-                append()
+                append(activity)
             return valid_activities
 
         department_admin = False
@@ -107,7 +124,7 @@ class ActivityManager:
             if department_admin:
                 activity_department_id = UserInfo.query.filter_by(cuid=activity.organizer_id).first().department_id
                 if department_id == activity_department_id:
-                    append()
+                    append(activity)
 
             if activity.can_sign_up == 'yes' or activity.can_sign_up == 'conditional':
                 if activity.can_sign_up == 'conditional':
@@ -115,9 +132,9 @@ class ActivityManager:
                     for group in group_activity:
                         if (group.department_id == UserInfo.query.filter_by(cuid=self.cuid).first().department_id or
                                 group.class_id == UserInfo.query.filter_by(cuid=self.cuid).first().class_id):
-                            append()
+                            append(activity)
                 else:
-                    append()
+                    append(activity)
 
         return valid_activities
 
