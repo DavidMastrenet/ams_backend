@@ -252,7 +252,7 @@ class ActivityManager:
         group_activity = GroupActivity.query.filter_by(activity_id=activity.activity_id).all()
         for group in group_activity:
             if group.class_id == UserInfo.query.filter_by(cuid=self.cuid).first().class_id:
-                return False, "您所在的或班级已经安排了该活动"
+                return False, "您所在的班级已经安排了该活动"
         if activity.can_sign_up == 'no':
             return False, "活动不允许报名"
         if activity.start_register and activity.end_register:
@@ -262,8 +262,7 @@ class ActivityManager:
         for _ in UserActivity.query.filter_by(activity_id=activity.activity_id).all():
             current_register += 1
         for group in group_activity:
-            if group.class_id == UserInfo.query.filter_by(cuid=self.cuid).first().class_id:
-                current_register += UserInfo.query.filter_by(class_id=group.class_id).count()
+            current_register += UserInfo.query.filter_by(class_id=group.class_id).count()
         if activity.max_register and current_register >= activity.max_register:
             return False, "活动报名人数已满"
         if activity.can_sign_up == 'yes':
@@ -274,6 +273,7 @@ class ActivityManager:
             for group in group_activity_registration:
                 if group.class_id == UserInfo.query.filter_by(cuid=self.cuid).first().class_id:
                     return True, "活动允许报名"
+            return False, "您所在的班级不允许报名该活动"
         return False, "活动不允许报名"
 
     def register_activity(self):
