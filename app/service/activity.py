@@ -48,3 +48,13 @@ class ActivityService:
         self.activity_id = activity_id
         self.activity_manager = ActivityManager(self.cuid, self.activity_id)
         return self.activity_manager.quit_activity()
+
+    def check_activity_permission(self, activity_id):
+        self.activity_id = activity_id
+        self.activity_manager = ActivityManager(self.cuid, self.activity_id)
+        return self.activity_manager.check_activity_permission()
+
+    def get_participate_list(self, activity_id):
+        self.activity_id = activity_id
+        self.activity_manager = ActivityManager(self.cuid, self.activity_id)
+        return self.activity_manager.get_participate_list()

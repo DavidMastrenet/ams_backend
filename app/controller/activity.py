@@ -178,3 +178,28 @@ def quit_activity(activity_id):
     if not status:
         return message_service.send_error_message(msg)
     return message_service.send_message(msg)
+
+
+@activity_bp.route('/api/activity/participate/<activity_id>', methods=['GET'])
+@login_required
+def get_participate_list(activity_id):
+    """
+    获取活动参与者列表
+
+    ---
+    tags:
+      - 活动
+    security:
+      - BearerAuth: []
+    responses:
+      200:
+        description: 活动参与者列表
+      401:
+        description: 无权限查看活动
+    """
+    activity_service = ActivityService(current_user.id)
+    if not activity_service.check_activity_permission(activity_id):
+        return message_service.send_unauthorized_message('无权限查看活动')
+    activity_service = ActivityService(current_user.id)
+    participate_list = activity_service.get_participate_list(activity_id)
+    return jsonify(participate_list)

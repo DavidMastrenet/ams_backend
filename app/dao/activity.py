@@ -211,16 +211,17 @@ class ActivityManager:
         for category_id in ActivityCategoryMapping.query.filter_by(activity_id=self.activity_id).all():
             db.session.delete(category_id)
             db.session.commit()
-        if not isinstance(category, list):
-            for category_id in category.split(','):
-                category_id = int(category_id)
-                category_mapping = ActivityCategoryMapping(activity_id=self.activity_id, category_id=category_id)
-                db.session.add(category_mapping)
-        else:
-            for category_id in category:
-                category_id = int(category_id['category_id'])
-                category_mapping = ActivityCategoryMapping(activity_id=self.activity_id, category_id=category_id)
-                db.session.add(category_mapping)
+        if category:
+            if not isinstance(category, list):
+                for category_id in category.split(','):
+                    category_id = int(category_id)
+                    category_mapping = ActivityCategoryMapping(activity_id=self.activity_id, category_id=category_id)
+                    db.session.add(category_mapping)
+            else:
+                for category_id in category:
+                    category_id = int(category_id['category_id'])
+                    category_mapping = ActivityCategoryMapping(activity_id=self.activity_id, category_id=category_id)
+                    db.session.add(category_mapping)
         db.session.commit()
         return activity
 
@@ -249,7 +250,7 @@ class ActivityManager:
                 current_register += UserInfo.query.filter_by(department_id=group.department_id).count()
             elif group.class_id == UserInfo.query.filter_by(cuid=self.cuid).first().class_id:
                 current_register += UserInfo.query.filter_by(class_id=group.class_id).count()
-        if current_register >= activity.max_register:
+        if activity.max_register and current_register >= activity.max_register:
             return False, "活动报名人数已满"
         if activity.can_sign_up == 'yes':
             return True, "活动允许报名"
@@ -287,3 +288,28 @@ class ActivityManager:
             db.session.commit()
             return True, "退出成功"
         return False, "您还没有参加该活动"
+
+    def get_participate_list(self):
+        participate_list = []
+        # 活动参与情况（加载通过的），加载CUID和姓名
+        user_activity = UserActivity.query.filter_by(activity_id=self.activity_id).all()
+        for user in user_activity:
+            if user.is_approved:
+                participate_list.append({
+                    'cuid': user.cuid,
+                    'username': UserInfo.query.filter_by(cuid=user.cuid).first().username
+                })
+        # 查询学院的
+        group_activity = GroupActivity.query.filter_by(activity_id=self.activity_id).all()
+        for group in group_activity:
+            if group.department_id == UserInfo.query.filter_by(cuid=self.cuid).first().department_id:
+                participate_list.append({
+                    'cuid': UserInfo.query.filter_by(cuid=self.cuid).first().cuid,
+                    'username': UserInfo.query.filter_by(cuid=group.department_id).first().username
+                })
+            elif group.class_id == UserInfo.query.filter_by(cuid=self.cuid).first().class_id:
+                participate_list.append({
+                    'cuid': UserInfo.query.filter_by(cuid=self.cuid).first().cuid,
+                    'username': UserInfo.query.filter_by(cuid=group.department_id).first().username
+                })
+        return participate_list

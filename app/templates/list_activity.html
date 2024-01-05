@@ -535,6 +535,92 @@
                                                     "showLoading": true
                                                 },
                                                 "id": "u:fa1c1d4a2a08"
+                                            },
+                                            {
+                                                "type": "button",
+                                                "label": "查看参与名单",
+                                                "onEvent": {
+                                                    "click": {
+                                                        "actions": [
+                                                            {
+                                                                "ignoreError": false,
+                                                                "actionType": "dialog",
+                                                                "dialog": {
+                                                                    "type": "dialog",
+                                                                    "title": "${name}参与情况",
+                                                                    "body": [
+                                                                        {
+                                                                            "type": "crud",
+                                                                            "syncLocation": false,
+                                                                            "api": {
+                                                                                "method": "get",
+                                                                                "url": "/api/activity/participate/${activity_id}",
+                                                                                "requestAdaptor": "",
+                                                                                "adaptor": "",
+                                                                                "messages": {}
+                                                                            },
+                                                                            "columns": [
+                                                                                {
+                                                                                    "label": "学工号",
+                                                                                    "type": "text",
+                                                                                    "name": "cuid",
+                                                                                    "id": "u:05f70952b140"
+                                                                                },
+                                                                                {
+                                                                                    "label": "姓名",
+                                                                                    "type": "text",
+                                                                                    "name": "username",
+                                                                                    "id": "u:f30f7f99119a"
+                                                                                }
+                                                                            ],
+                                                                            "bulkActions": [],
+                                                                            "itemActions": [],
+                                                                            "filterSettingSource": [
+                                                                                "cuid",
+                                                                                "username"
+                                                                            ],
+                                                                            "id": "u:74cd69ebce56",
+                                                                            "perPageAvailable": [
+                                                                                10
+                                                                            ],
+                                                                            "messages": {},
+                                                                            "primaryField": "cuid",
+                                                                            "headerToolbar": [
+                                                                                {
+                                                                                    "type": "export-excel",
+                                                                                    "label": "导出 Excel",
+                                                                                    "filename": "${name}参与名单",
+                                                                                    "id": "u:3693e1ed79d8"
+                                                                                }
+                                                                            ]
+                                                                        }
+                                                                    ],
+                                                                    "showCloseButton": true,
+                                                                    "showErrorMsg": true,
+                                                                    "showLoading": true,
+                                                                    "className": "app-popover",
+                                                                    "actions": [
+                                                                        {
+                                                                            "type": "button",
+                                                                            "actionType": "cancel",
+                                                                            "label": "取消",
+                                                                            "id": "u:88f36fd49cd6"
+                                                                        },
+                                                                        {
+                                                                            "type": "button",
+                                                                            "actionType": "confirm",
+                                                                            "label": "确认",
+                                                                            "primary": true,
+                                                                            "id": "u:12921458c867"
+                                                                        }
+                                                                    ],
+                                                                    "id": "u:9f19631d01e4"
+                                                                }
+                                                            }
+                                                        ]
+                                                    }
+                                                },
+                                                "id": "u:1d6c4c34a87e"
                                             }
                                         ],
                                         "id": "u:0f8e7a21a81d",
