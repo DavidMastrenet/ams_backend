@@ -76,6 +76,12 @@
                                 "label": "是否参与"
                             },
                             {
+                                "type": "status",
+                                "value": "${is_approved}",
+                                "id": "u:037cb5352184",
+                                "label": "通过审核"
+                            },
+                            {
                                 "label": "活动时间",
                                 "type": "text",
                                 "name": "time",
@@ -94,328 +100,432 @@
                                 "id": "u:f88b2b82fc1b"
                             },
                             {
-                                "label": "创建者",
+                                "label": "参与人数",
                                 "type": "text",
-                                "name": "organizer_name",
+                                "name": "current_register",
                                 "id": "u:3a36bc8769d7"
-                            }
-                        ],
-                        "actions": [
-                            {
-                                "label": "查看",
-                                "type": "button",
-                                "actionType": "dialog",
-                                "level": "link",
-                                "dialog": {
-                                    "type": "dialog",
-                                    "title": "查看详情",
-                                    "body": [
-                                        {
-                                            "type": "form",
-                                            "api": {
-                                                "method": "get",
-                                                "url": "/api/activity/info/${activity_id}",
-                                                "requestAdaptor": "",
-                                                "adaptor": "",
-                                                "messages": {}
-                                            },
-                                            "body": [
-                                                {
-                                                    "label": "序号",
-                                                    "name": "activity_id",
-                                                    "type": "static",
-                                                    "id": "u:fc7770545014"
-                                                },
-                                                {
-                                                    "label": "名称",
-                                                    "name": "name",
-                                                    "type": "static",
-                                                    "id": "u:3c16a7e171ea"
-                                                },
-                                                {
-                                                    "label": "分类",
-                                                    "name": "category_display",
-                                                    "type": "static",
-                                                    "id": "u:6eaaccf8558e",
-                                                    "quickEdit": false,
-                                                    "popOver": false,
-                                                    "copyable": false
-                                                },
-                                                {
-                                                    "label": "地点",
-                                                    "name": "location",
-                                                    "type": "static",
-                                                    "id": "u:773d3f071834"
-                                                },
-                                                {
-                                                    "label": "时间",
-                                                    "name": "time",
-                                                    "type": "static",
-                                                    "id": "u:fe41cd231802"
-                                                },
-                                                {
-                                                    "label": "描述",
-                                                    "name": "description",
-                                                    "type": "static",
-                                                    "id": "u:6ae97b9d3085",
-                                                    "quickEdit": false,
-                                                    "popOver": false,
-                                                    "copyable": false
-                                                },
-                                                {
-                                                    "label": "能否报名",
-                                                    "name": "can_sign_up",
-                                                    "type": "static",
-                                                    "id": "u:1de45f92ffcd",
-                                                    "quickEdit": false,
-                                                    "popOver": false,
-                                                    "copyable": false,
-                                                    "tpl": "",
-                                                    "hidden": false
-                                                },
-                                                {
-                                                    "label": "开始报名时间",
-                                                    "name": "start_register",
-                                                    "type": "static",
-                                                    "id": "u:009c2dfe3526",
-                                                    "quickEdit": false,
-                                                    "popOver": false,
-                                                    "copyable": false,
-                                                    "hidden": false
-                                                },
-                                                {
-                                                    "label": "截止报名时间",
-                                                    "name": "end_register",
-                                                    "type": "static",
-                                                    "id": "u:4d31189c16cb",
-                                                    "quickEdit": false,
-                                                    "popOver": false,
-                                                    "copyable": false
-                                                },
-                                                {
-                                                    "label": "最大参加人数",
-                                                    "name": "max_register",
-                                                    "type": "static",
-                                                    "id": "u:09feec1b27c4",
-                                                    "quickEdit": false,
-                                                    "popOver": false,
-                                                    "copyable": false
-                                                },
-                                                {
-                                                    "label": "能否退出",
-                                                    "name": "can_quit",
-                                                    "type": "static",
-                                                    "id": "u:e61dad7b6c67",
-                                                    "quickEdit": false,
-                                                    "popOver": false,
-                                                    "copyable": false
-                                                },
-                                                {
-                                                    "label": "创建者",
-                                                    "name": "organizer_name",
-                                                    "type": "static",
-                                                    "id": "u:d9f3d13eb944",
-                                                    "quickEdit": false,
-                                                    "popOver": false,
-                                                    "copyable": false
-                                                }
-                                            ],
-                                            "id": "u:d6393b7d5685",
-                                            "actions": [
-                                                {
-                                                    "type": "submit",
-                                                    "label": "提交",
-                                                    "primary": true
-                                                }
-                                            ],
-                                            "feat": "Insert",
-                                            "dsType": "api"
-                                        }
-                                    ],
-                                    "id": "u:8ec119ac20c2",
-                                    "actions": [],
-                                    "showCloseButton": true,
-                                    "closeOnOutside": true,
-                                    "closeOnEsc": true,
-                                    "showErrorMsg": true,
-                                    "showLoading": true,
-                                    "withDefaultData": false,
-                                    "dataMapSwitch": false
-                                },
-                                "id": "u:24521b9f2c58",
-                                "onEvent": {
-                                    "click": {
-                                        "weight": 0,
-                                        "actions": []
-                                    }
-                                }
                             },
                             {
-                                "label": "编辑",
-                                "type": "button",
-                                "actionType": "dialog",
-                                "level": "link",
-                                "dialog": {
-                                    "type": "dialog",
-                                    "title": "修改 ${name} 活动",
-                                    "body": [
-                                        {
-                                            "type": "form",
-                                            "api": "/api/activity/edit/${activity_id}",
-                                            "body": [
-                                                {
-                                                    "label": "名称",
-                                                    "name": "name",
-                                                    "type": "input-text",
-                                                    "id": "u:0f6ebaaffc35"
-                                                },
-                                                {
-                                                    "label": "地点",
-                                                    "name": "location",
-                                                    "type": "input-text",
-                                                    "id": "u:06ffdba7d737"
-                                                },
-                                                {
-                                                    "label": "时间",
-                                                    "name": "time",
-                                                    "type": "input-datetime",
-                                                    "id": "u:de4fa10545ae",
-                                                    "placeholder": "请选择日期以及时间",
-                                                    "valueFormat": "YYYY-MM-DD HH:mm:ss",
-                                                    "displayFormat": "YYYY-MM-DD HH:mm:ss",
-                                                    "minDate": "",
-                                                    "maxDate": "",
-                                                    "value": ""
-                                                },
-                                                {
-                                                    "type": "checkboxes",
-                                                    "label": "分类",
-                                                    "name": "category",
-                                                    "id": "u:1d587486b4ef",
-                                                    "multiple": true,
-                                                    "source": {
-                                                        "url": "/api/activity/category",
-                                                        "method": "get",
-                                                        "requestAdaptor": "",
-                                                        "adaptor": "",
-                                                        "messages": {}
-                                                    },
-                                                    "labelField": "category_name",
-                                                    "valueField": "category_id"
-                                                },
-                                                {
-                                                    "label": "描述",
-                                                    "name": "description",
-                                                    "type": "input-text",
-                                                    "id": "u:cf755e023485"
-                                                },
-                                                {
-                                                    "type": "select",
-                                                    "label": "能否报名",
-                                                    "name": "can_sign_up",
-                                                    "id": "u:a369c79cf0db",
-                                                    "value": "",
-                                                    "options": [
+                                "type": "collapse-group",
+                                "activeKey": [
+                                    "1"
+                                ],
+                                "body": [
+                                    {
+                                        "type": "collapse",
+                                        "key": "1",
+                                        "active": true,
+                                        "header": "查看",
+                                        "body": [
+                                            {
+                                                "label": "查看",
+                                                "type": "button",
+                                                "actionType": "dialog",
+                                                "level": "default",
+                                                "dialog": {
+                                                    "type": "dialog",
+                                                    "title": "查看详情",
+                                                    "body": [
                                                         {
-                                                            "label": "是",
-                                                            "value": "yes"
-                                                        },
-                                                        {
-                                                            "label": "条件",
-                                                            "value": "conditional"
-                                                        },
-                                                        {
-                                                            "label": "否",
-                                                            "value": "no"
+                                                            "type": "form",
+                                                            "api": {
+                                                                "method": "get",
+                                                                "url": "/api/activity/info/${activity_id}",
+                                                                "requestAdaptor": "",
+                                                                "adaptor": "",
+                                                                "messages": {}
+                                                            },
+                                                            "body": [
+                                                                {
+                                                                    "label": "序号",
+                                                                    "name": "activity_id",
+                                                                    "type": "static",
+                                                                    "id": "u:fc7770545014"
+                                                                },
+                                                                {
+                                                                    "label": "名称",
+                                                                    "name": "name",
+                                                                    "type": "static",
+                                                                    "id": "u:3c16a7e171ea"
+                                                                },
+                                                                {
+                                                                    "label": "分类",
+                                                                    "name": "category_display",
+                                                                    "type": "static",
+                                                                    "id": "u:6eaaccf8558e",
+                                                                    "quickEdit": false,
+                                                                    "popOver": false,
+                                                                    "copyable": false
+                                                                },
+                                                                {
+                                                                    "label": "地点",
+                                                                    "name": "location",
+                                                                    "type": "static",
+                                                                    "id": "u:773d3f071834"
+                                                                },
+                                                                {
+                                                                    "label": "时间",
+                                                                    "name": "time",
+                                                                    "type": "static",
+                                                                    "id": "u:fe41cd231802"
+                                                                },
+                                                                {
+                                                                    "label": "描述",
+                                                                    "name": "description",
+                                                                    "type": "static",
+                                                                    "id": "u:6ae97b9d3085",
+                                                                    "quickEdit": false,
+                                                                    "popOver": false,
+                                                                    "copyable": false
+                                                                },
+                                                                {
+                                                                    "label": "能否报名",
+                                                                    "name": "can_sign_up",
+                                                                    "type": "static",
+                                                                    "id": "u:1de45f92ffcd",
+                                                                    "quickEdit": false,
+                                                                    "popOver": false,
+                                                                    "copyable": false,
+                                                                    "tpl": "",
+                                                                    "hidden": false
+                                                                },
+                                                                {
+                                                                    "label": "开始报名时间",
+                                                                    "name": "start_register",
+                                                                    "type": "static",
+                                                                    "id": "u:009c2dfe3526",
+                                                                    "quickEdit": false,
+                                                                    "popOver": false,
+                                                                    "copyable": false,
+                                                                    "hidden": false
+                                                                },
+                                                                {
+                                                                    "label": "截止报名时间",
+                                                                    "name": "end_register",
+                                                                    "type": "static",
+                                                                    "id": "u:4d31189c16cb",
+                                                                    "quickEdit": false,
+                                                                    "popOver": false,
+                                                                    "copyable": false
+                                                                },
+                                                                {
+                                                                    "label": "最大参加人数",
+                                                                    "name": "max_register",
+                                                                    "type": "static",
+                                                                    "id": "u:09feec1b27c4",
+                                                                    "quickEdit": false,
+                                                                    "popOver": false,
+                                                                    "copyable": false
+                                                                },
+                                                                {
+                                                                    "label": "能否退出",
+                                                                    "name": "can_quit",
+                                                                    "type": "static",
+                                                                    "id": "u:e61dad7b6c67",
+                                                                    "quickEdit": false,
+                                                                    "popOver": false,
+                                                                    "copyable": false
+                                                                },
+                                                                {
+                                                                    "label": "创建者",
+                                                                    "name": "organizer_name",
+                                                                    "type": "static",
+                                                                    "id": "u:d9f3d13eb944",
+                                                                    "quickEdit": false,
+                                                                    "popOver": false,
+                                                                    "copyable": false
+                                                                }
+                                                            ],
+                                                            "id": "u:d6393b7d5685",
+                                                            "actions": [
+                                                                {
+                                                                    "type": "submit",
+                                                                    "label": "提交",
+                                                                    "primary": true
+                                                                }
+                                                            ],
+                                                            "feat": "Insert",
+                                                            "dsType": "api"
                                                         }
                                                     ],
-                                                    "multiple": false
+                                                    "id": "u:8ec119ac20c2",
+                                                    "actions": [],
+                                                    "showCloseButton": true,
+                                                    "closeOnOutside": true,
+                                                    "closeOnEsc": true,
+                                                    "showErrorMsg": true,
+                                                    "showLoading": true,
+                                                    "withDefaultData": false,
+                                                    "dataMapSwitch": false
                                                 },
-                                                {
-                                                    "type": "input-datetime",
-                                                    "label": "开始报名时间",
-                                                    "name": "start_register",
-                                                    "id": "u:ca987a2db0d4",
-                                                    "value": "",
-                                                    "placeholder": "请选择日期以及时间",
-                                                    "valueFormat": "YYYY-MM-DD HH:mm:ss",
-                                                    "displayFormat": "YYYY-MM-DD HH:mm:ss",
-                                                    "minDate": "",
-                                                    "maxDate": ""
+                                                "id": "u:24521b9f2c58",
+                                                "onEvent": {
+                                                    "click": {
+                                                        "weight": 0,
+                                                        "actions": []
+                                                    }
+                                                }
+                                            },
+                                            {
+                                                "type": "button",
+                                                "label": "报名",
+                                                "onEvent": {
+                                                    "click": {
+                                                        "actions": [
+                                                            {
+                                                                "ignoreError": false,
+                                                                "actionType": "ajax",
+                                                                "outputVar": "msg",
+                                                                "options": {
+                                                                    "silent": false
+                                                                },
+                                                                "api": {
+                                                                    "url": "/api/activity/register/${activity_id}",
+                                                                    "method": "get",
+                                                                    "requestAdaptor": "",
+                                                                    "adaptor": "",
+                                                                    "messages": {
+                                                                        "failed": "${msg}"
+                                                                    }
+                                                                }
+                                                            },
+                                                            {
+                                                                "ignoreError": false,
+                                                                "actionType": "reload",
+                                                                "componentId": "u:93fc453c7734",
+                                                                "args": {
+                                                                    "resetPage": true
+                                                                }
+                                                            }
+                                                        ]
+                                                    }
                                                 },
-                                                {
-                                                    "type": "input-datetime",
-                                                    "label": "截止报名时间",
-                                                    "name": "end_register",
-                                                    "id": "u:81e7128f9781",
-                                                    "placeholder": "请选择日期以及时间",
-                                                    "valueFormat": "YYYY-MM-DD HH:mm:ss",
-                                                    "displayFormat": "YYYY-MM-DD HH:mm:ss",
-                                                    "minDate": "",
-                                                    "maxDate": "",
-                                                    "value": ""
+                                                "id": "u:4dc872f12ac3",
+                                                "confirmText": "是否确认参加 ${name} ？",
+                                                "disabledOn": "${is_participate}"
+                                            },
+                                            {
+                                                "type": "button",
+                                                "label": "取消报名",
+                                                "onEvent": {
+                                                    "click": {
+                                                        "actions": [
+                                                            {
+                                                                "ignoreError": false,
+                                                                "actionType": "ajax",
+                                                                "outputVar": "msg",
+                                                                "options": {
+                                                                    "silent": false
+                                                                },
+                                                                "api": {
+                                                                    "url": "/api/activity/quit/${activity_id}",
+                                                                    "method": "get",
+                                                                    "requestAdaptor": "",
+                                                                    "adaptor": "",
+                                                                    "messages": {
+                                                                        "failed": "${msg}"
+                                                                    }
+                                                                }
+                                                            },
+                                                            {
+                                                                "ignoreError": false,
+                                                                "actionType": "reload",
+                                                                "componentId": "u:93fc453c7734",
+                                                                "args": {
+                                                                    "resetPage": true
+                                                                }
+                                                            }
+                                                        ]
+                                                    }
                                                 },
-                                                {
-                                                    "type": "input-number",
-                                                    "label": "最大参加人数",
-                                                    "name": "max_register",
-                                                    "id": "u:e5416a6b0e4a",
-                                                    "keyboard": true,
-                                                    "step": 1,
-                                                    "min": 0
-                                                },
-                                                {
-                                                    "type": "select",
-                                                    "label": "能否退出",
-                                                    "name": "can_quit",
-                                                    "id": "u:b1136befe721",
-                                                    "options": [
+                                                "id": "u:ff08fffd40de",
+                                                "confirmText": "是否确认退出 ${name} ？",
+                                                "disabledOn": "${is_participate == 0}",
+                                                "hiddenOn": "${can_quit == false}"
+                                            }
+                                        ],
+                                        "id": "u:036f05b874ea"
+                                    },
+                                    {
+                                        "type": "collapse",
+                                        "key": "2",
+                                        "header": "管理",
+                                        "body": [
+                                            {
+                                                "label": "编辑",
+                                                "type": "button",
+                                                "actionType": "dialog",
+                                                "level": "default",
+                                                "dialog": {
+                                                    "type": "dialog",
+                                                    "title": "修改 ${name} 活动",
+                                                    "body": [
                                                         {
-                                                            "label": "是",
-                                                            "value": true
-                                                        },
-                                                        {
-                                                            "label": "否",
-                                                            "value": false
+                                                            "type": "form",
+                                                            "api": "/api/activity/edit/${activity_id}",
+                                                            "body": [
+                                                                {
+                                                                    "label": "名称",
+                                                                    "name": "name",
+                                                                    "type": "input-text",
+                                                                    "id": "u:0f6ebaaffc35"
+                                                                },
+                                                                {
+                                                                    "label": "地点",
+                                                                    "name": "location",
+                                                                    "type": "input-text",
+                                                                    "id": "u:06ffdba7d737"
+                                                                },
+                                                                {
+                                                                    "label": "时间",
+                                                                    "name": "time",
+                                                                    "type": "input-datetime",
+                                                                    "id": "u:de4fa10545ae",
+                                                                    "placeholder": "请选择日期以及时间",
+                                                                    "valueFormat": "YYYY-MM-DD HH:mm:ss",
+                                                                    "displayFormat": "YYYY-MM-DD HH:mm:ss",
+                                                                    "minDate": "",
+                                                                    "maxDate": "",
+                                                                    "value": ""
+                                                                },
+                                                                {
+                                                                    "type": "checkboxes",
+                                                                    "label": "分类",
+                                                                    "name": "category",
+                                                                    "id": "u:1d587486b4ef",
+                                                                    "multiple": true,
+                                                                    "source": {
+                                                                        "url": "/api/activity/category",
+                                                                        "method": "get",
+                                                                        "requestAdaptor": "",
+                                                                        "adaptor": "",
+                                                                        "messages": {}
+                                                                    },
+                                                                    "labelField": "category_name",
+                                                                    "valueField": "category_id"
+                                                                },
+                                                                {
+                                                                    "label": "描述",
+                                                                    "name": "description",
+                                                                    "type": "input-text",
+                                                                    "id": "u:cf755e023485"
+                                                                },
+                                                                {
+                                                                    "type": "select",
+                                                                    "label": "能否报名",
+                                                                    "name": "can_sign_up",
+                                                                    "id": "u:a369c79cf0db",
+                                                                    "value": "",
+                                                                    "options": [
+                                                                        {
+                                                                            "label": "是",
+                                                                            "value": "yes"
+                                                                        },
+                                                                        {
+                                                                            "label": "条件",
+                                                                            "value": "conditional"
+                                                                        },
+                                                                        {
+                                                                            "label": "否",
+                                                                            "value": "no"
+                                                                        }
+                                                                    ],
+                                                                    "multiple": false
+                                                                },
+                                                                {
+                                                                    "type": "input-datetime",
+                                                                    "label": "开始报名时间",
+                                                                    "name": "start_register",
+                                                                    "id": "u:ca987a2db0d4",
+                                                                    "value": "",
+                                                                    "placeholder": "请选择日期以及时间",
+                                                                    "valueFormat": "YYYY-MM-DD HH:mm:ss",
+                                                                    "displayFormat": "YYYY-MM-DD HH:mm:ss",
+                                                                    "minDate": "",
+                                                                    "maxDate": ""
+                                                                },
+                                                                {
+                                                                    "type": "input-datetime",
+                                                                    "label": "截止报名时间",
+                                                                    "name": "end_register",
+                                                                    "id": "u:81e7128f9781",
+                                                                    "placeholder": "请选择日期以及时间",
+                                                                    "valueFormat": "YYYY-MM-DD HH:mm:ss",
+                                                                    "displayFormat": "YYYY-MM-DD HH:mm:ss",
+                                                                    "minDate": "",
+                                                                    "maxDate": "",
+                                                                    "value": ""
+                                                                },
+                                                                {
+                                                                    "type": "input-number",
+                                                                    "label": "最大参加人数",
+                                                                    "name": "max_register",
+                                                                    "id": "u:e5416a6b0e4a",
+                                                                    "keyboard": true,
+                                                                    "step": 1,
+                                                                    "min": 0
+                                                                },
+                                                                {
+                                                                    "type": "select",
+                                                                    "label": "能否退出",
+                                                                    "name": "can_quit",
+                                                                    "id": "u:b1136befe721",
+                                                                    "options": [
+                                                                        {
+                                                                            "label": "是",
+                                                                            "value": true
+                                                                        },
+                                                                        {
+                                                                            "label": "否",
+                                                                            "value": false
+                                                                        }
+                                                                    ],
+                                                                    "multiple": false,
+                                                                    "value": ""
+                                                                }
+                                                            ],
+                                                            "id": "u:d148ceb287c6",
+                                                            "actions": [
+                                                                {
+                                                                    "type": "submit",
+                                                                    "label": "提交",
+                                                                    "primary": true
+                                                                }
+                                                            ]
                                                         }
                                                     ],
-                                                    "multiple": false,
-                                                    "value": ""
-                                                }
-                                            ],
-                                            "id": "u:d148ceb287c6",
-                                            "actions": [
-                                                {
-                                                    "type": "submit",
-                                                    "label": "提交",
-                                                    "primary": true
-                                                }
-                                            ]
-                                        }
-                                    ],
-                                    "id": "u:c4e8c1820493",
-                                    "actions": [
-                                        {
-                                            "type": "button",
-                                            "actionType": "cancel",
-                                            "label": "取消",
-                                            "id": "u:e748489385e7"
-                                        },
-                                        {
-                                            "type": "button",
-                                            "actionType": "confirm",
-                                            "label": "确定",
-                                            "primary": true,
-                                            "id": "u:7b93c4042ddd"
-                                        }
-                                    ],
-                                    "showCloseButton": true,
-                                    "closeOnOutside": false,
-                                    "closeOnEsc": false,
-                                    "showErrorMsg": true,
-                                    "showLoading": true
-                                },
-                                "id": "u:fa1c1d4a2a08"
+                                                    "id": "u:c4e8c1820493",
+                                                    "actions": [
+                                                        {
+                                                            "type": "button",
+                                                            "actionType": "cancel",
+                                                            "label": "取消",
+                                                            "id": "u:e748489385e7"
+                                                        },
+                                                        {
+                                                            "type": "button",
+                                                            "actionType": "confirm",
+                                                            "label": "确定",
+                                                            "primary": true,
+                                                            "id": "u:7b93c4042ddd"
+                                                        }
+                                                    ],
+                                                    "showCloseButton": true,
+                                                    "closeOnOutside": false,
+                                                    "closeOnEsc": false,
+                                                    "showErrorMsg": true,
+                                                    "showLoading": true
+                                                },
+                                                "id": "u:fa1c1d4a2a08"
+                                            }
+                                        ],
+                                        "id": "u:0f8e7a21a81d",
+                                        "disabled": false,
+                                        "hidden": false,
+                                        "visibleOn": "${can_manage}"
+                                    }
+                                ],
+                                "id": "u:0d9164bff542"
                             }
                         ],
                         "id": "u:8e4f17d29cbc"

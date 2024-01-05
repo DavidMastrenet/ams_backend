@@ -88,7 +88,7 @@ def get_category_list():
         description: 活动分类列表
     """
     activity_service = ActivityService(current_user.id)
-    category_list = activity_service.get_catogery_list()
+    category_list = activity_service.get_category_list()
     return jsonify(category_list)
 
 
@@ -129,3 +129,51 @@ def edit_activity(activity_id):
     activity_service.edit_activity(activity_id, name, location, time, category, description, can_sign_up, start_register,
                                    end_register, max_register, can_quit)
     return message_service.send_message('活动修改成功')
+
+
+@activity_bp.route('/api/activity/register/<activity_id>', methods=['GET'])
+@login_required
+def register_activity(activity_id):
+    """
+    报名活动
+
+    ---
+    tags:
+      - 活动
+    security:
+      - BearerAuth: []
+    responses:
+      200:
+        description: 活动报名成功
+      404:
+        description: 无法报名活动
+    """
+    activity_service = ActivityService(current_user.id)
+    status, msg = activity_service.register_activity(activity_id)
+    if not status:
+        return message_service.send_error_message(msg)
+    return message_service.send_message(msg)
+
+
+@activity_bp.route('/api/activity/quit/<activity_id>', methods=['GET'])
+@login_required
+def quit_activity(activity_id):
+    """
+    退出活动
+
+    ---
+    tags:
+      - 活动
+    security:
+      - BearerAuth: []
+    responses:
+      200:
+        description: 活动退出成功
+      404:
+        description: 无法退出活动
+    """
+    activity_service = ActivityService(current_user.id)
+    status, msg = activity_service.quit_activity(activity_id)
+    if not status:
+        return message_service.send_error_message(msg)
+    return message_service.send_message(msg)

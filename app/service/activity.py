@@ -24,13 +24,28 @@ class ActivityService:
         self.activity_manager = ActivityManager(self.cuid, self.activity_id)
         return self.activity_manager.get_valid_activity()
 
-    def get_catogery_list(self):
+    def get_category_list(self):
         self.activity_manager = ActivityManager(self.cuid, self.activity_id)
         return self.activity_manager.get_category_list()
 
-    def edit_activity(self, activity_id ,name, location, time, category, description, can_sign_up, start_register, end_register,
+    def edit_activity(self, activity_id, name, location, time, category, description, can_sign_up, start_register,
+                      end_register,
                       max_register, can_quit):
         self.activity_id = activity_id
         self.activity_manager = ActivityManager(self.cuid, self.activity_id)
-        return self.activity_manager.edit_activity(name, location, time, category, description, can_sign_up, start_register, end_register,
-                      max_register, can_quit)
+        return self.activity_manager.edit_activity(name, location, time, category, description, can_sign_up,
+                                                   start_register, end_register,
+                                                   max_register, can_quit)
+
+    def register_activity(self, activity_id):
+        self.activity_id = activity_id
+        self.activity_manager = ActivityManager(self.cuid, self.activity_id)
+        status, msg = self.activity_manager.check_register_permission()
+        if status is False:
+            return status, msg
+        return self.activity_manager.register_activity()
+
+    def quit_activity(self, activity_id):
+        self.activity_id = activity_id
+        self.activity_manager = ActivityManager(self.cuid, self.activity_id)
+        return self.activity_manager.quit_activity()

@@ -59,9 +59,10 @@ class ActivityManager:
         valid_activities = []
 
         def append(activity):
-            organizer_name = UserInfo.query.filter_by(cuid=Activity.organizer_id).first().username
+            organizer_name = UserInfo.query.filter_by(cuid=activity.organizer_id).first().username
+
             category_list = []
-            category_list_query = ActivityCategoryMapping.query.filter_by(activity_id=Activity.activity_id).all()
+            category_list_query = ActivityCategoryMapping.query.filter_by(activity_id=activity.activity_id).all()
             if category_list_query is None:
                 category_list.append('未分类')
             else:
@@ -73,15 +74,40 @@ class ActivityManager:
             for category in category_list:
                 category_display.append(category['category_name'])
 
+            is_approved = None
             group_activity = GroupActivity.query.filter_by(activity_id=activity.activity_id).all()
             is_participate = 0
             for group in group_activity:
                 if group.department_id == UserInfo.query.filter_by(cuid=self.cuid).first().department_id or \
                         group.class_id == UserInfo.query.filter_by(cuid=self.cuid).first().class_id:
                     is_participate = 1
+                    is_approved = 1
             for user_activity in UserActivity.query.filter_by(cuid=self.cuid).all():
                 if user_activity.activity_id == activity.activity_id:
                     is_participate = 1
+                    if user_activity.is_approved:
+                        is_approved = 1
+                    else:
+                        is_approved = 0
+
+            # 检测管理权限
+            can_manage = 0
+            self.activity_id = activity.activity_id
+            if self.check_activity_permission():
+                can_manage = 1
+
+            # 当前活动的全部参与人数
+            # 学院和班级的要算全部
+            current_register = 0
+            for user_activity in UserActivity.query.filter_by(activity_id=activity.activity_id).all():
+                if user_activity.is_approved:
+                    current_register += 1
+            # 学院和班级的
+            for group in group_activity:
+                if group.department_id == UserInfo.query.filter_by(cuid=self.cuid).first().department_id:
+                    current_register += UserInfo.query.filter_by(department_id=group.department_id).count()
+                elif group.class_id == UserInfo.query.filter_by(cuid=self.cuid).first().class_id:
+                    current_register += UserInfo.query.filter_by(class_id=group.class_id).count()
 
             # 格式化时间
             if activity.start_register:
@@ -95,7 +121,8 @@ class ActivityManager:
                  'description': activity.description,
                  'can_sign_up': activity.can_sign_up, 'can_quit': activity.can_quit, 'organizer_name': organizer_name,
                  'start_register': activity.start_register, 'end_register': activity.end_register,
-                 'max_register': activity.max_register, 'category': category_list, 'is_participate': is_participate})
+                 'max_register': activity.max_register, 'category': category_list, 'is_participate': is_participate,
+                 'is_approved': is_approved, 'can_manage': can_manage, 'current_register': current_register})
 
         # 列出当前用户有效的全局权限
         user_role = UserRole.query.filter_by(cuid=self.cuid).all()
@@ -165,7 +192,7 @@ class ActivityManager:
             activity.end_register = end_register
         if max_register:
             activity.max_register = max_register
-        if can_quit:
+        if can_quit == False or can_quit == 'false' or can_quit == True or can_quit == 'true':
             activity.can_quit = can_quit
         for category_id in ActivityCategoryMapping.query.filter_by(activity_id=self.activity_id).all():
             db.session.delete(category_id)
@@ -182,3 +209,52 @@ class ActivityManager:
                 db.session.add(category_mapping)
         db.session.commit()
         return activity
+
+    def check_register_permission(self):
+        activity = Activity.query.filter_by(activity_id=self.activity_id).first()
+        # 检测是否已经参加了
+        if UserActivity.query.filter_by(activity_id=self.activity_id, cuid=self.cuid).first():
+            return False, "您已经参加了该活动"
+        # 检测所在学院或班级是否安排了，安排了也不能参加
+        group_activity = GroupActivity.query.filter_by(activity_id=activity.activity_id).all()
+        for group in group_activity:
+            if (group.department_id == UserInfo.query.filter_by(cuid=self.cuid).first().department_id or
+                    group.class_id == UserInfo.query.filter_by(cuid=self.cuid).first().class_id):
+                return False, "您所在的学院或班级已经安排了该活动"
+        if activity.can_sign_up == 'no':
+            return False, "活动不允许报名"
+        if activity.start_register and activity.end_register:
+            if datetime.now() < activity.start_register or datetime.now() > activity.end_register:
+                return False, "活动报名时间已过"
+        if activity.max_register and UserActivity.query.filter_by(
+                activity_id=self.activity_id).count() >= activity.max_register:
+            return False, "活动报名人数已满"
+        if activity.can_sign_up == 'yes':
+            return True, "活动允许报名"
+        if activity.can_sign_up == 'conditional':
+            group_activity = GroupActivity.query.filter_by(activity_id=activity.activity_id).all()
+            for group in group_activity:
+                if (group.department_id == UserInfo.query.filter_by(cuid=self.cuid).first().department_id or
+                        group.class_id == UserInfo.query.filter_by(cuid=self.cuid).first().class_id):
+                    return True, "活动允许报名"
+        return False, "活动不允许报名"
+
+    def register_activity(self):
+        user_activity = UserActivity(cuid=self.cuid, activity_id=self.activity_id, registration_time=datetime.now())
+        db.session.add(user_activity)
+        db.session.commit()
+        return True, "报名成功"
+
+    def quit_activity(self):
+        # 学院或班级安排的不允许退出
+        group_activity = GroupActivity.query.filter_by(activity_id=self.activity_id).all()
+        for group in group_activity:
+            if (group.department_id == UserInfo.query.filter_by(cuid=self.cuid).first().department_id or
+                    group.class_id == UserInfo.query.filter_by(cuid=self.cuid).first().class_id):
+                return False, "统一安排的活动不允许退出"
+        user_activity = UserActivity.query.filter_by(activity_id=self.activity_id, cuid=self.cuid).first()
+        if user_activity:
+            db.session.delete(user_activity)
+            db.session.commit()
+            return True, "退出成功"
+        return False, "您还没有参加该活动"
