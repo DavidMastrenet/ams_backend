@@ -58,3 +58,27 @@ class ActivityService:
         self.activity_id = activity_id
         self.activity_manager = ActivityManager(self.cuid, self.activity_id)
         return self.activity_manager.get_participate_list()
+
+    def get_unapproved_list(self, activity_id):
+        self.activity_id = activity_id
+        self.activity_manager = ActivityManager(self.cuid, self.activity_id)
+        return self.activity_manager.get_unapproved_list()
+
+    def approve_activity(self, activity_id, cuid):
+        self.activity_id = activity_id
+        self.activity_manager = ActivityManager(self.cuid, self.activity_id)
+        return self.activity_manager.approve_activity(cuid)
+
+    def get_department_class_list(self):
+        self.activity_manager = ActivityManager(self.cuid, self.activity_id)
+        return self.activity_manager.get_department_class_list()
+
+    def get_activity_group_list(self, activity_id):
+        self.activity_id = activity_id
+        self.activity_manager = ActivityManager(self.cuid, self.activity_id)
+        return self.activity_manager.get_activity_group_list()
+
+    def add_activity_group(self, activity_id, classes):
+        self.activity_id = activity_id
+        self.activity_manager = ActivityManager(self.cuid, self.activity_id)
+        return self.activity_manager.add_group_activity(classes)

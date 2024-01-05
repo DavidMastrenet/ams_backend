@@ -1,6 +1,6 @@
 from app import db
 from app.models import UserInfo, UserRole, Activity, ActivityCategory, ActivityCategoryMapping, ActivityPermission, \
-    GroupActivity, UserActivity
+    GroupActivity, UserActivity, Department, Class, ClassDepartmentMapping, GroupActivityRegistration
 from datetime import datetime
 
 
@@ -83,8 +83,7 @@ class ActivityManager:
             group_activity = GroupActivity.query.filter_by(activity_id=activity.activity_id).all()
             is_participate = 0
             for group in group_activity:
-                if group.department_id == UserInfo.query.filter_by(cuid=self.cuid).first().department_id or \
-                        group.class_id == UserInfo.query.filter_by(cuid=self.cuid).first().class_id:
+                if group.class_id == UserInfo.query.filter_by(cuid=self.cuid).first().class_id:
                     is_participate = 1
                     is_approved = 1
             for user_activity in UserActivity.query.filter_by(cuid=self.cuid).all():
@@ -102,17 +101,14 @@ class ActivityManager:
                 can_manage = 1
 
             # 当前活动的全部参与人数
-            # 学院和班级的要算全部
+            # 班级的要算全部
             current_register = 0
-            for user_activity in UserActivity.query.filter_by(activity_id=activity.activity_id).all():
-                if user_activity.is_approved:
-                    current_register += 1
-            # 学院和班级的
+            for _ in UserActivity.query.filter_by(activity_id=activity.activity_id).all():
+                current_register += 1
+            # 班级的
             for group in group_activity:
-                if group.department_id == UserInfo.query.filter_by(cuid=self.cuid).first().department_id:
-                    current_register += UserInfo.query.filter_by(department_id=group.department_id).count()
-                elif group.class_id == UserInfo.query.filter_by(cuid=self.cuid).first().class_id:
-                    current_register += UserInfo.query.filter_by(class_id=group.class_id).count()
+                for _ in UserInfo.query.filter_by(class_id=group.class_id).all():
+                    current_register += 1
 
             # 格式化时间
             if activity.start_register:
@@ -169,8 +165,7 @@ class ActivityManager:
                 if activity.can_sign_up == 'conditional':
                     group_activity = GroupActivity.query.filter_by(activity_id=activity.activity_id).all()
                     for group in group_activity:
-                        if (group.department_id == UserInfo.query.filter_by(cuid=self.cuid).first().department_id or
-                                group.class_id == UserInfo.query.filter_by(cuid=self.cuid).first().class_id):
+                        if group.class_id == UserInfo.query.filter_by(cuid=self.cuid).first().class_id:
                             append(activity)
                 else:
                     append(activity)
@@ -233,32 +228,27 @@ class ActivityManager:
         # 检测所在学院或班级是否安排了，安排了也不能参加
         group_activity = GroupActivity.query.filter_by(activity_id=activity.activity_id).all()
         for group in group_activity:
-            if (group.department_id == UserInfo.query.filter_by(cuid=self.cuid).first().department_id or
-                    group.class_id == UserInfo.query.filter_by(cuid=self.cuid).first().class_id):
-                return False, "您所在的学院或班级已经安排了该活动"
+            if group.class_id == UserInfo.query.filter_by(cuid=self.cuid).first().class_id:
+                return False, "您所在的或班级已经安排了该活动"
         if activity.can_sign_up == 'no':
             return False, "活动不允许报名"
         if activity.start_register and activity.end_register:
             if datetime.now() < activity.start_register or datetime.now() > activity.end_register:
-                return False, "活动报名时间已过"
+                return False, "不在活动报名时间内"
         current_register = 0
-        for user_activity in UserActivity.query.filter_by(activity_id=activity.activity_id).all():
-            if user_activity.is_approved:
-                current_register += 1
+        for _ in UserActivity.query.filter_by(activity_id=activity.activity_id).all():
+            current_register += 1
         for group in group_activity:
-            if group.department_id == UserInfo.query.filter_by(cuid=self.cuid).first().department_id:
-                current_register += UserInfo.query.filter_by(department_id=group.department_id).count()
-            elif group.class_id == UserInfo.query.filter_by(cuid=self.cuid).first().class_id:
+            if group.class_id == UserInfo.query.filter_by(cuid=self.cuid).first().class_id:
                 current_register += UserInfo.query.filter_by(class_id=group.class_id).count()
         if activity.max_register and current_register >= activity.max_register:
             return False, "活动报名人数已满"
         if activity.can_sign_up == 'yes':
             return True, "活动允许报名"
         if activity.can_sign_up == 'conditional':
-            group_activity = GroupActivity.query.filter_by(activity_id=activity.activity_id).all()
-            for group in group_activity:
-                if (group.department_id == UserInfo.query.filter_by(cuid=self.cuid).first().department_id or
-                        group.class_id == UserInfo.query.filter_by(cuid=self.cuid).first().class_id):
+            group_activity_registration = GroupActivityRegistration.query.filter_by(activity_id=activity.activity_id).all()
+            for group in group_activity_registration:
+                if group.class_id == UserInfo.query.filter_by(cuid=self.cuid).first().class_id and group.allow_registration:
                     return True, "活动允许报名"
         return False, "活动不允许报名"
 
@@ -276,12 +266,19 @@ class ActivityManager:
         return True, "报名成功"
 
     def quit_activity(self):
-        # 学院或班级安排的不允许退出
+        # 班级安排的不允许退出
         group_activity = GroupActivity.query.filter_by(activity_id=self.activity_id).all()
         for group in group_activity:
-            if (group.department_id == UserInfo.query.filter_by(cuid=self.cuid).first().department_id or
-                    group.class_id == UserInfo.query.filter_by(cuid=self.cuid).first().class_id):
+            if group.class_id == UserInfo.query.filter_by(cuid=self.cuid).first().class_id:
                 return False, "统一安排的活动不允许退出"
+        # 不在报名时间内的活动不允许退出
+        activity = Activity.query.filter_by(activity_id=self.activity_id).first()
+        if activity.start_register and activity.end_register:
+            if datetime.now() < activity.start_register or datetime.now() > activity.end_register:
+                return False, "不在活动报名时间内"
+        # 开始后的活动不允许退出
+        if datetime.now() > activity.time:
+            return False, "活动已经开始，不能退出"
         user_activity = UserActivity.query.filter_by(activity_id=self.activity_id, cuid=self.cuid).first()
         if user_activity:
             db.session.delete(user_activity)
@@ -291,25 +288,93 @@ class ActivityManager:
 
     def get_participate_list(self):
         participate_list = []
-        # 活动参与情况（加载通过的），加载CUID和姓名
+
+        def append(user):
+            participate_list.append({
+                'cuid': user.cuid,
+                'username': UserInfo.query.filter_by(cuid=user.cuid).first().username,
+                'department_name': Department.query.filter_by(department_id=UserInfo.query.filter_by(
+                    cuid=user.cuid).first().department_id).first().department_name,
+                'class_name': Class.query.filter_by(
+                    class_id=UserInfo.query.filter_by(cuid=user.cuid).first().class_id).first().class_name,
+            })
+
+        # 活动参与情况（加载通过的），加载CUID和姓名、学院、班级的名称
         user_activity = UserActivity.query.filter_by(activity_id=self.activity_id).all()
         for user in user_activity:
             if user.is_approved:
-                participate_list.append({
-                    'cuid': user.cuid,
-                    'username': UserInfo.query.filter_by(cuid=user.cuid).first().username
-                })
+                append(user)
+
         # 查询学院的
         group_activity = GroupActivity.query.filter_by(activity_id=self.activity_id).all()
         for group in group_activity:
-            if group.department_id == UserInfo.query.filter_by(cuid=self.cuid).first().department_id:
-                participate_list.append({
-                    'cuid': UserInfo.query.filter_by(cuid=self.cuid).first().cuid,
-                    'username': UserInfo.query.filter_by(cuid=group.department_id).first().username
-                })
-            elif group.class_id == UserInfo.query.filter_by(cuid=self.cuid).first().class_id:
-                participate_list.append({
-                    'cuid': UserInfo.query.filter_by(cuid=self.cuid).first().cuid,
-                    'username': UserInfo.query.filter_by(cuid=group.department_id).first().username
-                })
+            for user in UserInfo.query.filter_by(class_id=group.class_id).all():
+                append(user)
         return participate_list
+
+    def get_unapproved_list(self):
+        unapproved_list = []
+
+        def append(user):
+            unapproved_list.append({
+                'cuid': user.cuid,
+                'username': UserInfo.query.filter_by(cuid=user.cuid).first().username,
+                'department_name': Department.query.filter_by(department_id=UserInfo.query.filter_by(
+                    cuid=user.cuid).first().department_id).first().department_name,
+                'class_name': Class.query.filter_by(
+                    class_id=UserInfo.query.filter_by(cuid=user.cuid).first().class_id).first().class_name,
+            })
+
+        unapproved_object = UserActivity.query.filter_by(activity_id=self.activity_id, is_approved=False).all()
+        for user in unapproved_object:
+            append(user)
+        return unapproved_list
+
+    def approve_activity(self, cuid):
+        user_activity = UserActivity.query.filter_by(activity_id=self.activity_id, cuid=cuid).first()
+        if user_activity:
+            user_activity.is_approved = True
+            user_activity.approved_time = datetime.now()
+            db.session.commit()
+            return True, "审核成功"
+        return False, "审核失败"
+
+    def get_department_class_list(self):
+        department_class_list = []
+        for department in Department.query.all():
+            department_class_list.append({
+                'label': department.department_name,
+                'children': []
+            })
+            for class_department in ClassDepartmentMapping.query.filter_by(
+                    department_id=department.department_id).all():
+                department_class_list[-1]['children'].append({
+                    'label': Class.query.filter_by(class_id=class_department.class_id).first().class_name,
+                    'value': class_department.class_id
+                })
+        return department_class_list
+
+    def get_activity_group_list(self):
+        group_activity = GroupActivity.query.filter_by(activity_id=self.activity_id).all()
+        # 返回值{"class":"1,2"}，是个json
+        return {
+            'class': ','.join([str(group.class_id) for group in group_activity])
+        }
+
+    def add_group_activity(self, classes):
+        # 先删去所有的安排并提交
+        group_activity = GroupActivity.query.filter_by(activity_id=self.activity_id).all()
+        for group in group_activity:
+            db.session.delete(group)
+        db.session.commit()
+
+        if classes:
+            class_id = [int(class_id) for class_id in classes.split(',')]
+        else:
+            class_id = []
+
+        for class_id in class_id:
+            group_activity = GroupActivity(class_id=class_id, activity_id=self.activity_id)
+            db.session.add(group_activity)
+        db.session.commit()
+        return True, "添加成功"

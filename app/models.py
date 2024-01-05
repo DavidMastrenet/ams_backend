@@ -70,14 +70,13 @@ class GroupActivity(db.Model):
     activity_participation_id = db.Column(db.Integer, primary_key=True)
     activity_id = db.Column(db.Integer, db.ForeignKey('activity.activity_id'))
     class_id = db.Column(db.Integer, db.ForeignKey('class.class_id'))
-    department_id = db.Column(db.Integer, db.ForeignKey('department.department_id'))
 
 
 class GroupActivityRegistration(db.Model):
     __tablename__ = 'group_activity_registration'
     registration_id = db.Column(db.Integer, primary_key=True)
     activity_id = db.Column(db.Integer, db.ForeignKey('activity.activity_id'))
-    department_id = db.Column(db.Integer, db.ForeignKey('department.department_id'))
+    class_id = db.Column(db.Integer, db.ForeignKey('class.class_id'))
     allow_registration = db.Column(db.Boolean, default=True)
 
 

@@ -9,9 +9,9 @@
             content="width=device-width, initial-scale=1, maximum-scale=1"
     />
     <meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
-    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/amis/3.4.0/sdk.css"/>
-    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/amis/3.4.0/helper.css"/>
-    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/amis/3.4.0/iconfont.css"/>
+    <link rel="stylesheet" href="https://lib.baomitu.com/amis/6.0.0/sdk.css"/>
+    <link rel="stylesheet" href="https://lib.baomitu.com/amis/6.0.0/helper.css"/>
+    <link rel="stylesheet" href="https://lib.baomitu.com/amis/6.0.0/iconfont.css"/>
     <style>
         html,
         body,
@@ -26,7 +26,7 @@
 </head>
 <body>
 <div id="root" class="app-wrapper"></div>
-<script src="https://cdn.bootcdn.net/ajax/libs/amis/3.4.0/sdk.js"></script>
+<script src="https://lib.baomitu.com/amis/6.0.0/sdk.js"></script>
 <script type="text/javascript">
     (function () {
         let amis = amisRequire('amis/embed');
@@ -564,22 +564,36 @@
                                                                                     "label": "学工号",
                                                                                     "type": "text",
                                                                                     "name": "cuid",
-                                                                                    "id": "u:05f70952b140"
+                                                                                    "id": "u:fcdcb4752f44"
                                                                                 },
                                                                                 {
                                                                                     "label": "姓名",
                                                                                     "type": "text",
                                                                                     "name": "username",
-                                                                                    "id": "u:f30f7f99119a"
+                                                                                    "id": "u:c943a4811b15"
+                                                                                },
+                                                                                {
+                                                                                    "label": "学院",
+                                                                                    "type": "text",
+                                                                                    "name": "department_name",
+                                                                                    "id": "u:c9a8671566a5"
+                                                                                },
+                                                                                {
+                                                                                    "label": "班级",
+                                                                                    "type": "text",
+                                                                                    "name": "class_name",
+                                                                                    "id": "u:718878dc993b"
                                                                                 }
                                                                             ],
                                                                             "bulkActions": [],
                                                                             "itemActions": [],
                                                                             "filterSettingSource": [
+                                                                                "class_name",
                                                                                 "cuid",
+                                                                                "department_name",
                                                                                 "username"
                                                                             ],
-                                                                            "id": "u:74cd69ebce56",
+                                                                            "id": "u:07c9116db605",
                                                                             "perPageAvailable": [
                                                                                 10
                                                                             ],
@@ -590,7 +604,7 @@
                                                                                     "type": "export-excel",
                                                                                     "label": "导出 Excel",
                                                                                     "filename": "${name}参与名单",
-                                                                                    "id": "u:3693e1ed79d8"
+                                                                                    "id": "u:057eb607b61e"
                                                                                 }
                                                                             ]
                                                                         }
@@ -621,6 +635,303 @@
                                                     }
                                                 },
                                                 "id": "u:1d6c4c34a87e"
+                                            },
+                                            {
+                                                "type": "button",
+                                                "label": "审核",
+                                                "onEvent": {
+                                                    "click": {
+                                                        "actions": [
+                                                            {
+                                                                "ignoreError": false,
+                                                                "actionType": "dialog",
+                                                                "dialog": {
+                                                                    "type": "dialog",
+                                                                    "title": "${name}名单审核",
+                                                                    "body": [
+                                                                        {
+                                                                            "type": "crud",
+                                                                            "syncLocation": false,
+                                                                            "api": {
+                                                                                "method": "get",
+                                                                                "url": "/api/activity/unapproved/${activity_id}",
+                                                                                "requestAdaptor": "",
+                                                                                "adaptor": "",
+                                                                                "messages": {}
+                                                                            },
+                                                                            "columns": [
+                                                                                {
+                                                                                    "label": "学工号",
+                                                                                    "type": "text",
+                                                                                    "name": "cuid",
+                                                                                    "id": "u:b06e1e1f101a"
+                                                                                },
+                                                                                {
+                                                                                    "label": "姓名",
+                                                                                    "type": "text",
+                                                                                    "name": "username",
+                                                                                    "id": "u:4a0e6af33711"
+                                                                                },
+                                                                                {
+                                                                                    "label": "学院",
+                                                                                    "type": "text",
+                                                                                    "name": "department_name",
+                                                                                    "id": "u:6f817592c193"
+                                                                                },
+                                                                                {
+                                                                                    "label": "班级",
+                                                                                    "type": "text",
+                                                                                    "name": "class_name",
+                                                                                    "id": "u:1719e0457dde"
+                                                                                },
+                                                                                {
+                                                                                    "type": "operation",
+                                                                                    "label": "操作",
+                                                                                    "buttons": [
+                                                                                        {
+                                                                                            "label": "审核",
+                                                                                            "type": "button",
+                                                                                            "actionType": "dialog",
+                                                                                            "level": "link",
+                                                                                            "dialog": {
+                                                                                                "title": "查看详情",
+                                                                                                "body": [
+                                                                                                    {
+                                                                                                        "type": "form",
+                                                                                                        "api": "/api/activity/approve/${activity_id}",
+                                                                                                        "body": [
+                                                                                                            {
+                                                                                                                "label": "学工号",
+                                                                                                                "name": "cuid",
+                                                                                                                "id": "u:0f0452df5365",
+                                                                                                                "type": "static"
+                                                                                                            },
+                                                                                                            {
+                                                                                                                "label": "姓名",
+                                                                                                                "name": "username",
+                                                                                                                "id": "u:378feb38ad91",
+                                                                                                                "type": "static"
+                                                                                                            },
+                                                                                                            {
+                                                                                                                "label": "学院",
+                                                                                                                "name": "department_name",
+                                                                                                                "id": "u:8d6293aaebb8",
+                                                                                                                "type": "static"
+                                                                                                            },
+                                                                                                            {
+                                                                                                                "label": "班级",
+                                                                                                                "name": "class_name",
+                                                                                                                "id": "u:e9ee9f21111f",
+                                                                                                                "type": "static"
+                                                                                                            }
+                                                                                                        ],
+                                                                                                        "id": "u:e419960dcd19",
+                                                                                                        "actions": [
+                                                                                                            {
+                                                                                                                "type": "submit",
+                                                                                                                "label": "提交",
+                                                                                                                "primary": true
+                                                                                                            }
+                                                                                                        ]
+                                                                                                    }
+                                                                                                ],
+                                                                                                "type": "dialog",
+                                                                                                "id": "u:eeb6279238d4",
+                                                                                                "actions": [
+                                                                                                    {
+                                                                                                        "type": "button",
+                                                                                                        "actionType": "confirm",
+                                                                                                        "label": "通过",
+                                                                                                        "id": "u:51205891d154",
+                                                                                                        "onEvent": {
+                                                                                                            "click": {
+                                                                                                                "weight": 0,
+                                                                                                                "actions": [
+                                                                                                                    {
+                                                                                                                        "ignoreError": false,
+                                                                                                                        "actionType": "reload",
+                                                                                                                        "componentId": "u:a2771d74d846",
+                                                                                                                        "args": {
+                                                                                                                            "resetPage": true
+                                                                                                                        }
+                                                                                                                    }
+                                                                                                                ]
+                                                                                                            }
+                                                                                                        },
+                                                                                                        "primary": true
+                                                                                                    }
+                                                                                                ],
+                                                                                                "closeOnOutside": true,
+                                                                                                "closeOnEsc": true,
+                                                                                                "showCloseButton": true
+                                                                                            },
+                                                                                            "id": "u:4f703e788708"
+                                                                                        }
+                                                                                    ],
+                                                                                    "id": "u:4a2c117b04eb"
+                                                                                }
+                                                                            ],
+                                                                            "bulkActions": [],
+                                                                            "itemActions": [],
+                                                                            "filterSettingSource": [
+                                                                                "class_name",
+                                                                                "cuid",
+                                                                                "department_name",
+                                                                                "username"
+                                                                            ],
+                                                                            "id": "u:a2771d74d846",
+                                                                            "perPageAvailable": [
+                                                                                10
+                                                                            ],
+                                                                            "messages": {},
+                                                                            "primaryField": "cuid",
+                                                                            "headerToolbar": [
+                                                                                {
+                                                                                    "type": "export-excel",
+                                                                                    "label": "导出 Excel",
+                                                                                    "filename": "${name}参与名单",
+                                                                                    "id": "u:047fa6e23fb8"
+                                                                                }
+                                                                            ],
+                                                                            "features": [
+                                                                                "view"
+                                                                            ]
+                                                                        }
+                                                                    ],
+                                                                    "showCloseButton": true,
+                                                                    "showErrorMsg": true,
+                                                                    "showLoading": true,
+                                                                    "className": "app-popover",
+                                                                    "actions": [
+                                                                        {
+                                                                            "type": "button",
+                                                                            "actionType": "cancel",
+                                                                            "label": "取消",
+                                                                            "id": "u:798bbc01fb58"
+                                                                        },
+                                                                        {
+                                                                            "type": "button",
+                                                                            "actionType": "confirm",
+                                                                            "label": "确认",
+                                                                            "primary": true,
+                                                                            "id": "u:6ed7dcc530c3"
+                                                                        }
+                                                                    ],
+                                                                    "id": "u:fa41d048ecd7"
+                                                                }
+                                                            }
+                                                        ]
+                                                    }
+                                                },
+                                                "id": "u:97e13e9c9e8b"
+                                            },
+                                            {
+                                                "type": "button",
+                                                "label": "统一安排",
+                                                "onEvent": {
+                                                    "click": {
+                                                        "actions": [
+                                                            {
+                                                                "ignoreError": false,
+                                                                "actionType": "dialog",
+                                                                "dialog": {
+                                                                    "type": "dialog",
+                                                                    "title": "统一安排 ${name}",
+                                                                    "body": [
+                                                                        {
+                                                                            "id": "u:c606ccd14d25",
+                                                                            "type": "form",
+                                                                            "title": "表单",
+                                                                            "mode": "horizontal",
+                                                                            "dsType": "api",
+                                                                            "feat": "Insert",
+                                                                            "body": [
+                                                                                {
+                                                                                    "label": "",
+                                                                                    "type": "tabs-transfer",
+                                                                                    "name": "class",
+                                                                                    "selectMode": "list",
+                                                                                    "options": [],
+                                                                                    "id": "u:2ab8431eef90",
+                                                                                    "source": {
+                                                                                        "url": "/api/activity/class",
+                                                                                        "method": "get",
+                                                                                        "requestAdaptor": "",
+                                                                                        "adaptor": "",
+                                                                                        "messages": {}
+                                                                                    }
+                                                                                }
+                                                                            ],
+                                                                            "api": {
+                                                                                "url": "/api/activity/add_group/${activity_id}",
+                                                                                "method": "post",
+                                                                                "requestAdaptor": "",
+                                                                                "adaptor": "",
+                                                                                "messages": {}
+                                                                            },
+                                                                            "actions": [
+                                                                                {
+                                                                                    "type": "button",
+                                                                                    "label": "提交",
+                                                                                    "onEvent": {
+                                                                                        "click": {
+                                                                                            "actions": [
+                                                                                                {
+                                                                                                    "actionType": "submit",
+                                                                                                    "componentId": "u:c606ccd14d25"
+                                                                                                }
+                                                                                            ]
+                                                                                        }
+                                                                                    },
+                                                                                    "level": "primary",
+                                                                                    "id": "u:022e7624fb5f"
+                                                                                }
+                                                                            ],
+                                                                            "resetAfterSubmit": true
+                                                                        }
+                                                                    ],
+                                                                    "showCloseButton": true,
+                                                                    "showErrorMsg": true,
+                                                                    "showLoading": true,
+                                                                    "className": "app-popover",
+                                                                    "actions": [
+                                                                        {
+                                                                            "type": "button",
+                                                                            "actionType": "cancel",
+                                                                            "label": "取消",
+                                                                            "id": "u:bac6ef1dfa36"
+                                                                        },
+                                                                        {
+                                                                            "type": "button",
+                                                                            "actionType": "confirm",
+                                                                            "label": "确认",
+                                                                            "primary": true,
+                                                                            "id": "u:3fb10cceff76",
+                                                                            "confirmText": "注意，修改统一安排将会删去原先安排数据，请谨慎操作！",
+                                                                            "onEvent": {
+                                                                                "click": {
+                                                                                    "weight": 0,
+                                                                                    "actions": [
+                                                                                        {
+                                                                                            "ignoreError": false,
+                                                                                            "actionType": "refresh"
+                                                                                        }
+                                                                                    ]
+                                                                                }
+                                                                            }
+                                                                        }
+                                                                    ],
+                                                                    "id": "u:e55c685d5edc",
+                                                                    "closeOnOutside": false,
+                                                                    "closeOnEsc": false,
+                                                                    "withDefaultData": false,
+                                                                    "dataMapSwitch": false
+                                                                }
+                                                            }
+                                                        ]
+                                                    }
+                                                },
+                                                "id": "u:5f7b2a137c96"
                                             }
                                         ],
                                         "id": "u:0f8e7a21a81d",

@@ -203,3 +203,118 @@ def get_participate_list(activity_id):
     activity_service = ActivityService(current_user.id)
     participate_list = activity_service.get_participate_list(activity_id)
     return jsonify(participate_list)
+
+@activity_bp.route('/api/activity/unapproved/<activity_id>', methods=['GET'])
+@login_required
+def get_unapproved_list(activity_id):
+    """
+    获取未审核的名单
+
+    ---
+    tags:
+      - 活动
+    security:
+      - BearerAuth: []
+    responses:
+      200:
+        description: 活动未审核列表
+      401:
+        description: 无权限查看活动
+    """
+    activity_service = ActivityService(current_user.id)
+    if not activity_service.check_activity_permission(activity_id):
+        return message_service.send_unauthorized_message('无权限查看活动')
+    unapproved_list = activity_service.get_unapproved_list(activity_id)
+    return jsonify(unapproved_list)
+
+
+@activity_bp.route('/api/activity/approve/<activity_id>', methods=['POST'])
+@login_required
+def approve_activity(activity_id):
+    """
+    审核活动
+
+    ---
+    tags:
+      - 活动
+    security:
+      - BearerAuth: []
+    responses:
+      200:
+        description: 活动审核成功
+      401:
+        description: 无权限审核活动
+    """
+    activity_service = ActivityService(current_user.id)
+    cuid = request.json.get('cuid')
+    if not activity_service.check_activity_permission(activity_id):
+        return message_service.send_unauthorized_message('无权限审核活动')
+    status, msg = activity_service.approve_activity(activity_id, cuid)
+    if not status:
+        return message_service.send_error_message(msg)
+    return message_service.send_message(msg)
+
+@activity_bp.route('/api/activity/class', methods=['GET'])
+@login_required
+def get_department_class_list():
+    """
+    获取学院和班级列表
+
+    ---
+    tags:
+      - 活动
+    security:
+      - BearerAuth: []
+    responses:
+      200:
+        description: 学院和班级列表
+    """
+    activity_service = ActivityService(current_user.id)
+    department_class_list = activity_service.get_department_class_list()
+    return jsonify(department_class_list)
+
+@activity_bp.route('/api/activity/list_group/<activity_id>', methods=['GET'])
+@login_required
+def get_activity_group_list(activity_id):
+    """
+    获取活动安排班级列表
+
+    ---
+    tags:
+      - 活动
+    security:
+      - BearerAuth: []
+    responses:
+      200:
+        description: 活动组列表
+    """
+    activity_service = ActivityService(current_user.id)
+    if not activity_service.check_activity_permission(activity_id):
+        return message_service.send_unauthorized_message('无权限查看活动')
+    activity_group_list = activity_service.get_activity_group_list(activity_id)
+    return jsonify(activity_group_list)
+
+
+@activity_bp.route('/api/activity/add_group/<activity_id>', methods=['POST'])
+@login_required
+def add_activity_group(activity_id):
+    """
+    修改活动组
+
+    ---
+    tags:
+      - 活动
+    security:
+      - BearerAuth: []
+    responses:
+      200:
+        description: 活动组修改成功
+      401:
+        description: 无权限修改活动组
+    """
+    activity_service = ActivityService(current_user.id)
+    if not activity_service.check_activity_permission(activity_id):
+        return message_service.send_unauthorized_message('无权限修改活动组')
+    classes = request.json.get('class')
+    activity_service.add_activity_group(activity_id, classes)
+    return message_service.send_message('活动组修改成功')
