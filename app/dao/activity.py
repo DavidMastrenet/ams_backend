@@ -240,8 +240,16 @@ class ActivityManager:
         if activity.start_register and activity.end_register:
             if datetime.now() < activity.start_register or datetime.now() > activity.end_register:
                 return False, "活动报名时间已过"
-        if activity.max_register and UserActivity.query.filter_by(
-                activity_id=self.activity_id).count() >= activity.max_register:
+        current_register = 0
+        for user_activity in UserActivity.query.filter_by(activity_id=activity.activity_id).all():
+            if user_activity.is_approved:
+                current_register += 1
+        for group in group_activity:
+            if group.department_id == UserInfo.query.filter_by(cuid=self.cuid).first().department_id:
+                current_register += UserInfo.query.filter_by(department_id=group.department_id).count()
+            elif group.class_id == UserInfo.query.filter_by(cuid=self.cuid).first().class_id:
+                current_register += UserInfo.query.filter_by(class_id=group.class_id).count()
+        if current_register >= activity.max_register:
             return False, "活动报名人数已满"
         if activity.can_sign_up == 'yes':
             return True, "活动允许报名"
