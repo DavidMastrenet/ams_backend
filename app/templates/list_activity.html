@@ -850,7 +850,7 @@
                                                                             "title": "表单",
                                                                             "mode": "horizontal",
                                                                             "dsType": "api",
-                                                                            "feat": "Insert",
+                                                                            "feat": "Edit",
                                                                             "body": [
                                                                                 {
                                                                                     "label": "",
@@ -893,7 +893,14 @@
                                                                                     "id": "u:022e7624fb5f"
                                                                                 }
                                                                             ],
-                                                                            "resetAfterSubmit": true
+                                                                            "resetAfterSubmit": true,
+                                                                            "initApi": {
+                                                                                "url": "/api/activity/group_list/${activity_id}",
+                                                                                "method": "get",
+                                                                                "requestAdaptor": "",
+                                                                                "adaptor": "",
+                                                                                "messages": {}
+                                                                            }
                                                                         }
                                                                     ],
                                                                     "showCloseButton": true,
@@ -913,16 +920,10 @@
                                                                             "label": "确认",
                                                                             "primary": true,
                                                                             "id": "u:3fb10cceff76",
-                                                                            "confirmText": "注意，修改统一安排将会删去原先安排数据，请谨慎操作！",
                                                                             "onEvent": {
                                                                                 "click": {
                                                                                     "weight": 0,
-                                                                                    "actions": [
-                                                                                        {
-                                                                                            "ignoreError": false,
-                                                                                            "actionType": "refresh"
-                                                                                        }
-                                                                                    ]
+                                                                                    "actions": []
                                                                                 }
                                                                             }
                                                                         }
@@ -938,6 +939,116 @@
                                                     }
                                                 },
                                                 "id": "u:5f7b2a137c96"
+                                            },
+                                            {
+                                                "type": "button",
+                                                "label": "配置报名条件",
+                                                "onEvent": {
+                                                    "click": {
+                                                        "actions": [
+                                                            {
+                                                                "ignoreError": false,
+                                                                "actionType": "dialog",
+                                                                "dialog": {
+                                                                    "type": "dialog",
+                                                                    "title": "配置 ${name} 报名条件",
+                                                                    "body": [
+                                                                        {
+                                                                            "id": "u:418e7c903eb0",
+                                                                            "type": "form",
+                                                                            "title": "表单",
+                                                                            "mode": "horizontal",
+                                                                            "dsType": "api",
+                                                                            "feat": "Edit",
+                                                                            "body": [
+                                                                                {
+                                                                                    "label": "",
+                                                                                    "type": "tabs-transfer",
+                                                                                    "name": "class",
+                                                                                    "selectMode": "list",
+                                                                                    "options": [],
+                                                                                    "id": "u:5ea3eca06fcc",
+                                                                                    "source": {
+                                                                                        "url": "/api/activity/class",
+                                                                                        "method": "get",
+                                                                                        "requestAdaptor": "",
+                                                                                        "adaptor": "",
+                                                                                        "messages": {}
+                                                                                    }
+                                                                                }
+                                                                            ],
+                                                                            "api": {
+                                                                                "url": "/api/activity/add_condition/${activity_id}",
+                                                                                "method": "post",
+                                                                                "requestAdaptor": "",
+                                                                                "adaptor": "",
+                                                                                "messages": {}
+                                                                            },
+                                                                            "actions": [
+                                                                                {
+                                                                                    "type": "button",
+                                                                                    "label": "提交",
+                                                                                    "onEvent": {
+                                                                                        "click": {
+                                                                                            "actions": [
+                                                                                                {
+                                                                                                    "actionType": "submit",
+                                                                                                    "componentId": "u:418e7c903eb0"
+                                                                                                }
+                                                                                            ]
+                                                                                        }
+                                                                                    },
+                                                                                    "level": "primary",
+                                                                                    "id": "u:d7528b46740d"
+                                                                                }
+                                                                            ],
+                                                                            "resetAfterSubmit": true,
+                                                                            "initApi": {
+                                                                                "url": "/api/activity/condition/${activity_id}",
+                                                                                "method": "get",
+                                                                                "requestAdaptor": "",
+                                                                                "adaptor": "",
+                                                                                "messages": {}
+                                                                            }
+                                                                        }
+                                                                    ],
+                                                                    "showCloseButton": true,
+                                                                    "showErrorMsg": true,
+                                                                    "showLoading": true,
+                                                                    "className": "app-popover",
+                                                                    "actions": [
+                                                                        {
+                                                                            "type": "button",
+                                                                            "actionType": "cancel",
+                                                                            "label": "取消",
+                                                                            "id": "u:68554aa22249"
+                                                                        },
+                                                                        {
+                                                                            "type": "button",
+                                                                            "actionType": "confirm",
+                                                                            "label": "确认",
+                                                                            "primary": true,
+                                                                            "id": "u:9ca7cc4fd998",
+                                                                            "onEvent": {
+                                                                                "click": {
+                                                                                    "weight": 0,
+                                                                                    "actions": []
+                                                                                }
+                                                                            }
+                                                                        }
+                                                                    ],
+                                                                    "id": "u:9b3840a17f6f",
+                                                                    "closeOnOutside": false,
+                                                                    "closeOnEsc": false,
+                                                                    "withDefaultData": false,
+                                                                    "dataMapSwitch": false
+                                                                }
+                                                            }
+                                                        ]
+                                                    }
+                                                },
+                                                "id": "u:6c2d9b93fafa",
+                                                "visibleOn": "${can_sign_up == \"conditional\"}"
                                             }
                                         ],
                                         "id": "u:0f8e7a21a81d",

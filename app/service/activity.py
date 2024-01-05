@@ -82,3 +82,18 @@ class ActivityService:
         self.activity_id = activity_id
         self.activity_manager = ActivityManager(self.cuid, self.activity_id)
         return self.activity_manager.add_group_activity(classes)
+
+    def add_register_condition(self, activity_id, classes):
+        self.activity_id = activity_id
+        self.activity_manager = ActivityManager(self.cuid, self.activity_id)
+        return self.activity_manager.add_register_condition(classes)
+
+    def get_activity_condition(self, activity_id):
+        self.activity_id = activity_id
+        self.activity_manager = ActivityManager(self.cuid, self.activity_id)
+        return self.activity_manager.get_activity_condition()
+
+    def get_group_activity_list(self, activity_id):
+        self.activity_id = activity_id
+        self.activity_manager = ActivityManager(self.cuid, self.activity_id)
+        return self.activity_manager.get_group_activity_list()

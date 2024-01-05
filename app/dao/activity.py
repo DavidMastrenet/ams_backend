@@ -112,9 +112,9 @@ class ActivityManager:
 
             # 格式化时间
             if activity.start_register:
-                activity.start_register = activity.start_register.strftime('%Y-%m-%d %H:%M:%S')
+                activity.start_register = datetime.strptime(str(activity.start_register), '%Y-%m-%d %H:%M:%S')
             if activity.end_register:
-                activity.end_register = activity.end_register.strftime('%Y-%m-%d %H:%M:%S')
+                activity.end_register = datetime.strptime(str(activity.end_register), '%Y-%m-%d %H:%M:%S')
 
             valid_activities.append(
                 {'activity_id': activity.activity_id, 'name': activity.name, 'category_display': category_display,
@@ -155,11 +155,16 @@ class ActivityManager:
                 department_admin = True
 
         for activity in Activity.query.all():
+            for permission in ActivityPermission.query.filter_by(activity_id=activity.activity_id).all():
+                if permission.cuid == int(self.cuid):
+                    append(activity)
+                    continue
 
             if department_admin:
                 activity_department_id = UserInfo.query.filter_by(cuid=activity.organizer_id).first().department_id
                 if department_id == activity_department_id:
                     append(activity)
+                    continue
 
             if activity.can_sign_up == 'yes' or activity.can_sign_up == 'conditional':
                 if activity.can_sign_up == 'conditional':
@@ -167,8 +172,22 @@ class ActivityManager:
                     for group in group_activity:
                         if group.class_id == UserInfo.query.filter_by(cuid=self.cuid).first().class_id:
                             append(activity)
+                            continue
+                    group_activity_registration = GroupActivityRegistration.query.filter_by(
+                        activity_id=activity.activity_id).all()
+                    for group in group_activity_registration:
+                        if group.class_id == UserInfo.query.filter_by(cuid=self.cuid).first().class_id:
+                            append(activity)
+                            continue
                 else:
                     append(activity)
+                    continue
+
+        # 以activity_id为主键去除重复
+        for i in range(len(valid_activities)):
+            for j in range(i + 1, len(valid_activities)):
+                if valid_activities[i]['activity_id'] == valid_activities[j]['activity_id']:
+                    valid_activities.pop(j)
 
         return valid_activities
 
@@ -246,9 +265,10 @@ class ActivityManager:
         if activity.can_sign_up == 'yes':
             return True, "活动允许报名"
         if activity.can_sign_up == 'conditional':
-            group_activity_registration = GroupActivityRegistration.query.filter_by(activity_id=activity.activity_id).all()
+            group_activity_registration = GroupActivityRegistration.query.filter_by(
+                activity_id=activity.activity_id).all()
             for group in group_activity_registration:
-                if group.class_id == UserInfo.query.filter_by(cuid=self.cuid).first().class_id and group.allow_registration:
+                if group.class_id == UserInfo.query.filter_by(cuid=self.cuid).first().class_id:
                     return True, "活动允许报名"
         return False, "活动不允许报名"
 
@@ -297,7 +317,7 @@ class ActivityManager:
                     cuid=user.cuid).first().department_id).first().department_name,
                 'class_name': Class.query.filter_by(
                     class_id=UserInfo.query.filter_by(cuid=user.cuid).first().class_id).first().class_name,
-                'register_method' : user.registration_method
+                'register_method': user.registration_method
             })
 
         # 活动参与情况（加载通过的），加载CUID和姓名、学院、班级的名称
@@ -388,3 +408,40 @@ class ActivityManager:
 
         db.session.commit()
         return True, "添加成功"
+
+    def add_register_condition(self, classes):
+        # 先删去所有的条件并提交
+        register_condition = GroupActivityRegistration.query.filter_by(activity_id=self.activity_id).all()
+        for group in register_condition:
+            db.session.delete(group)
+        db.session.commit()
+
+        if classes:
+            class_id = [int(class_id) for class_id in classes.split(',')]
+        else:
+            class_id = []
+
+        for class_id in class_id:
+            group_activity = GroupActivityRegistration(class_id=class_id, activity_id=self.activity_id)
+            db.session.add(group_activity)
+
+        db.session.commit()
+        return True, "添加成功"
+
+    def get_activity_condition(self):
+        condition_list = {"class" : ""}
+        for group in GroupActivityRegistration.query.filter_by(activity_id=self.activity_id).all():
+            if condition_list["class"]:
+                condition_list["class"] += "," + str(group.class_id)
+            else:
+                condition_list["class"] = str(group.class_id)
+        return condition_list
+
+    def get_group_activity_list(self):
+        group_activity_list = {"class" : ""}
+        for group in GroupActivity.query.filter_by(activity_id=self.activity_id).all():
+            if group_activity_list["class"]:
+                group_activity_list["class"] += "," + str(group.class_id)
+            else:
+                group_activity_list["class"] = str(group.class_id)
+        return group_activity_list

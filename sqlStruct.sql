@@ -99,7 +99,6 @@ CREATE TABLE group_activity_registration
     registration_id    INT PRIMARY KEY AUTO_INCREMENT,
     activity_id        INT,
     class_id           INT,
-    allow_registration BOOLEAN DEFAULT TRUE,
     FOREIGN KEY (activity_id) REFERENCES activity (activity_id),
     FOREIGN KEY (class_id) REFERENCES class (class_id)
 );

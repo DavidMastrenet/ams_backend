@@ -318,3 +318,76 @@ def add_activity_group(activity_id):
     classes = request.json.get('class')
     activity_service.add_activity_group(activity_id, classes)
     return message_service.send_message('活动组修改成功')
+
+
+@activity_bp.route('/api/activity/add_condition/<activity_id>', methods=['POST'])
+@login_required
+def add_register_condition(activity_id):
+    """
+    修改活动报名条件
+
+    ---
+    tags:
+      - 活动
+    security:
+      - BearerAuth: []
+    responses:
+      200:
+        description: 活动报名条件修改成功
+      401:
+        description: 无权限修改活动报名条件
+    """
+    activity_service = ActivityService(current_user.id)
+    if not activity_service.check_activity_permission(activity_id):
+        return message_service.send_unauthorized_message('无权限修改活动报名条件')
+    classes = request.json.get('class')
+    activity_service.add_register_condition(activity_id, classes)
+    return message_service.send_message('活动报名条件修改成功')
+
+
+@activity_bp.route('/api/activity/condition/<activity_id>', methods=['GET'])
+@login_required
+def get_activity_condition(activity_id):
+    """
+    获取活动报名条件
+
+    ---
+    tags:
+      - 活动
+    security:
+      - BearerAuth: []
+    responses:
+      200:
+        description: 活动报名条件
+      401:
+        description: 无权限查看活动报名条件
+    """
+    activity_service = ActivityService(current_user.id)
+    if not activity_service.check_activity_permission(activity_id):
+        return message_service.send_unauthorized_message('无权限查看活动报名条件')
+    activity_condition = activity_service.get_activity_condition(activity_id)
+    return jsonify(activity_condition)
+
+
+@activity_bp.route('/api/activity/group_list/<activity_id>', methods=['GET'])
+@login_required
+def get_group_activity_list(activity_id):
+    """
+    获取活动组列表
+
+    ---
+    tags:
+      - 活动
+    security:
+      - BearerAuth: []
+    responses:
+      200:
+        description: 活动组列表
+      401:
+        description: 无权限查看活动组列表
+    """
+    activity_service = ActivityService(current_user.id)
+    if not activity_service.check_activity_permission(activity_id):
+        return message_service.send_unauthorized_message('无权限查看活动组列表')
+    group_activity_list = activity_service.get_group_activity_list(activity_id)
+    return jsonify(group_activity_list)

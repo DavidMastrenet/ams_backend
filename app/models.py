@@ -77,7 +77,6 @@ class GroupActivityRegistration(db.Model):
     registration_id = db.Column(db.Integer, primary_key=True)
     activity_id = db.Column(db.Integer, db.ForeignKey('activity.activity_id'))
     class_id = db.Column(db.Integer, db.ForeignKey('class.class_id'))
-    allow_registration = db.Column(db.Boolean, default=True)
 
 
 class UserActivity(db.Model):
