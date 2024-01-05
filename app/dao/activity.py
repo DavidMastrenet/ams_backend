@@ -111,11 +111,18 @@ class ActivityManager:
                     current_register += 1
 
             # 格式化时间
-            if activity.start_register:
-                # 转换成%Y-%m-%d %H:%M:%S
-                activity.start_register = activity.start_register.strftime('%Y-%m-%d %H:%M:%S')
-            if activity.end_register:
-                activity.end_register = activity.end_register.strftime('%Y-%m-%d %H:%M:%S')
+            if activity.start_register is not None:
+                if type(activity.start_register) is datetime:
+                    activity.start_register = activity.start_register.strftime('%Y-%m-%d %H:%M:%S')
+                else:
+                    activity.start_register = datetime.strptime(activity.start_register, '%Y-%m-%d %H:%M:%S').strftime(
+                        '%Y-%m-%d %H:%M:%S')
+            if activity.end_register is not None:
+                if type(activity.end_register) is datetime:
+                    activity.end_register = activity.end_register.strftime('%Y-%m-%d %H:%M:%S')
+                else:
+                    activity.end_register = datetime.strptime(activity.end_register, '%Y-%m-%d %H:%M:%S').strftime(
+                        '%Y-%m-%d %H:%M:%S')
 
             valid_activities.append(
                 {'activity_id': activity.activity_id, 'name': activity.name, 'category_display': category_display,
@@ -184,11 +191,7 @@ class ActivityManager:
                     append(activity)
                     continue
 
-        # 以activity_id为主键去除重复
-        for i in range(len(valid_activities)):
-            for j in range(i + 1, len(valid_activities)):
-                if valid_activities[i]['activity_id'] == valid_activities[j]['activity_id']:
-                    valid_activities.pop(j)
+        valid_activities = list({activity['activity_id']: activity for activity in valid_activities}.values())
 
         return valid_activities
 
