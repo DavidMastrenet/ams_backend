@@ -297,18 +297,21 @@ class ActivityManager:
                     cuid=user.cuid).first().department_id).first().department_name,
                 'class_name': Class.query.filter_by(
                     class_id=UserInfo.query.filter_by(cuid=user.cuid).first().class_id).first().class_name,
+                'register_method' : user.registration_method
             })
 
         # 活动参与情况（加载通过的），加载CUID和姓名、学院、班级的名称
         user_activity = UserActivity.query.filter_by(activity_id=self.activity_id).all()
         for user in user_activity:
             if user.is_approved:
+                user.registration_method = '个人报名'
                 append(user)
 
         # 查询学院的
         group_activity = GroupActivity.query.filter_by(activity_id=self.activity_id).all()
         for group in group_activity:
             for user in UserInfo.query.filter_by(class_id=group.class_id).all():
+                user.registration_method = '班级统一安排'
                 append(user)
         return participate_list
 
@@ -376,5 +379,12 @@ class ActivityManager:
         for class_id in class_id:
             group_activity = GroupActivity(class_id=class_id, activity_id=self.activity_id)
             db.session.add(group_activity)
+
+            # 如果个人报名过，要删掉
+            for user in UserInfo.query.filter_by(class_id=class_id).all():
+                user_activity = UserActivity.query.filter_by(activity_id=self.activity_id, cuid=user.cuid).first()
+                if user_activity:
+                    db.session.delete(user_activity)
+
         db.session.commit()
         return True, "添加成功"
