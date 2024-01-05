@@ -112,9 +112,10 @@ class ActivityManager:
 
             # 格式化时间
             if activity.start_register:
-                activity.start_register = datetime.strptime(str(activity.start_register), '%Y-%m-%d %H:%M:%S')
+                # 转换成%Y-%m-%d %H:%M:%S
+                activity.start_register = activity.start_register.strftime('%Y-%m-%d %H:%M:%S')
             if activity.end_register:
-                activity.end_register = datetime.strptime(str(activity.end_register), '%Y-%m-%d %H:%M:%S')
+                activity.end_register = activity.end_register.strftime('%Y-%m-%d %H:%M:%S')
 
             valid_activities.append(
                 {'activity_id': activity.activity_id, 'name': activity.name, 'category_display': category_display,
