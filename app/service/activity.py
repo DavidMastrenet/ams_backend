@@ -29,13 +29,12 @@ class ActivityService:
         return self.activity_manager.get_category_list()
 
     def edit_activity(self, activity_id, name, location, time, category, description, can_sign_up, start_register,
-                      end_register,
-                      max_register, can_quit):
+                      end_register, max_register, can_quit, need_approval):
         self.activity_id = activity_id
         self.activity_manager = ActivityManager(self.cuid, self.activity_id)
         return self.activity_manager.edit_activity(name, location, time, category, description, can_sign_up,
                                                    start_register, end_register,
-                                                   max_register, can_quit)
+                                                   max_register, can_quit, need_approval)
 
     def register_activity(self, activity_id):
         self.activity_id = activity_id

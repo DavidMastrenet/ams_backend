@@ -49,6 +49,7 @@ class Activity(db.Model):
     time = db.Column(db.DateTime, nullable=False)
     location = db.Column(db.String(255), nullable=False)
     can_sign_up = db.Column(db.Enum('no', 'yes', 'conditional'), nullable=False)
+    need_approval = db.Column(db.Boolean, default=False)
     start_register = db.Column(db.DateTime)
     end_register = db.Column(db.DateTime)
     max_register = db.Column(db.Integer)

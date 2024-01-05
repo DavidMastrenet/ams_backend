@@ -68,6 +68,7 @@ CREATE TABLE activity
     end_register   DATETIME,
     max_register   INT,
     can_quit       BOOLEAN DEFAULT TRUE,
+    need_approval  BOOLEAN DEFAULT FALSE,
     description    TEXT,
     organizer_id   INT,
     FOREIGN KEY (organizer_id) REFERENCES user_info (cuid)

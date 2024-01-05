@@ -13,6 +13,9 @@ class ActivityManager:
         # 先查询cuid和创建者是否相同
         if self.cuid == Activity.query.filter_by(activity_id=self.activity_id).first().organizer_id:
             return True
+        # 是否是admin
+        if UserInfo.query.filter_by(cuid=self.cuid).first().is_admin:
+            return True
         # 列出当前用户有效的全局权限
         user_role = UserRole.query.filter_by(cuid=self.cuid).all()
         # 注意UserRole的有效期start_date和end_date
@@ -32,6 +35,8 @@ class ActivityManager:
             return True
 
     def check_create_activity_permission(self):
+        if UserInfo.query.filter_by(cuid=self.cuid).first().is_admin:
+            return True
         # 检查是否是老师
         if UserInfo.query.filter_by(cuid=self.cuid).first().user_type == 'teacher':
             return True
@@ -122,7 +127,14 @@ class ActivityManager:
                  'can_sign_up': activity.can_sign_up, 'can_quit': activity.can_quit, 'organizer_name': organizer_name,
                  'start_register': activity.start_register, 'end_register': activity.end_register,
                  'max_register': activity.max_register, 'category': category_list, 'is_participate': is_participate,
-                 'is_approved': is_approved, 'can_manage': can_manage, 'current_register': current_register})
+                 'is_approved': is_approved, 'can_manage': can_manage, 'current_register': current_register,
+                 'need_approval': activity.need_approval})
+
+        # 管理员列出全部
+        if UserInfo.query.filter_by(cuid=self.cuid).first().is_admin:
+            for activity in Activity.query.all():
+                append(activity)
+            return valid_activities
 
         # 列出当前用户有效的全局权限
         user_role = UserRole.query.filter_by(cuid=self.cuid).all()
@@ -173,7 +185,7 @@ class ActivityManager:
         return category_list
 
     def edit_activity(self, name, location, time, category, description, can_sign_up, start_register, end_register,
-                      max_register, can_quit):
+                      max_register, can_quit, need_approval):
         activity = Activity.query.filter_by(activity_id=self.activity_id).first()
         # 空的不传，利用model遍历
         if name:
@@ -192,8 +204,10 @@ class ActivityManager:
             activity.end_register = end_register
         if max_register:
             activity.max_register = max_register
-        if can_quit == False or can_quit == 'false' or can_quit == True or can_quit == 'true':
+        if can_quit is not None:
             activity.can_quit = can_quit
+        if need_approval is not None:
+            activity.need_approval = need_approval
         for category_id in ActivityCategoryMapping.query.filter_by(activity_id=self.activity_id).all():
             db.session.delete(category_id)
             db.session.commit()
@@ -240,7 +254,14 @@ class ActivityManager:
         return False, "活动不允许报名"
 
     def register_activity(self):
-        user_activity = UserActivity(cuid=self.cuid, activity_id=self.activity_id, registration_time=datetime.now())
+        # 如果不用审核，就直接写is_approved
+        current_task = Activity.query.filter_by(activity_id=self.activity_id).first()
+        if not current_task.need_approval:
+            user_activity = UserActivity(cuid=self.cuid, activity_id=self.activity_id, is_approved=True,
+                                         registration_time=datetime.now())
+        else:
+            user_activity = UserActivity(cuid=self.cuid, activity_id=self.activity_id, is_approved=False,
+                                         registration_time=datetime.now())
         db.session.add(user_activity)
         db.session.commit()
         return True, "报名成功"

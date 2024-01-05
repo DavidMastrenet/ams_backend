@@ -126,8 +126,9 @@ def edit_activity(activity_id):
     end_register = request.json.get('end_register')
     max_register = request.json.get('max_register')
     can_quit = request.json.get('can_quit')
+    need_approval = request.json.get('need_approval')
     activity_service.edit_activity(activity_id, name, location, time, category, description, can_sign_up, start_register,
-                                   end_register, max_register, can_quit)
+                                   end_register, max_register, can_quit, need_approval)
     return message_service.send_message('活动修改成功')
 
 
