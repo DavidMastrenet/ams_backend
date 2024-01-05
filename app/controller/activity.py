@@ -127,7 +127,8 @@ def edit_activity(activity_id):
     max_register = request.json.get('max_register')
     can_quit = request.json.get('can_quit')
     need_approval = request.json.get('need_approval')
-    activity_service.edit_activity(activity_id, name, location, time, category, description, can_sign_up, start_register,
+    activity_service.edit_activity(activity_id, name, location, time, category, description, can_sign_up,
+                                   start_register,
                                    end_register, max_register, can_quit, need_approval)
     return message_service.send_message('活动修改成功')
 
@@ -204,6 +205,7 @@ def get_participate_list(activity_id):
     participate_list = activity_service.get_participate_list(activity_id)
     return jsonify(participate_list)
 
+
 @activity_bp.route('/api/activity/unapproved/<activity_id>', methods=['GET'])
 @login_required
 def get_unapproved_list(activity_id):
@@ -254,6 +256,7 @@ def approve_activity(activity_id):
         return message_service.send_error_message(msg)
     return message_service.send_message(msg)
 
+
 @activity_bp.route('/api/activity/class', methods=['GET'])
 @login_required
 def get_department_class_list():
@@ -272,6 +275,7 @@ def get_department_class_list():
     activity_service = ActivityService(current_user.id)
     department_class_list = activity_service.get_department_class_list()
     return jsonify(department_class_list)
+
 
 @activity_bp.route('/api/activity/list_group/<activity_id>', methods=['GET'])
 @login_required

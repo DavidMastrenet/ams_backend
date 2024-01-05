@@ -433,7 +433,7 @@ class ActivityManager:
         return True, "添加成功"
 
     def get_activity_condition(self):
-        condition_list = {"class" : ""}
+        condition_list = {"class": ""}
         for group in GroupActivityRegistration.query.filter_by(activity_id=self.activity_id).all():
             if condition_list["class"]:
                 condition_list["class"] += "," + str(group.class_id)
@@ -442,7 +442,7 @@ class ActivityManager:
         return condition_list
 
     def get_group_activity_list(self):
-        group_activity_list = {"class" : ""}
+        group_activity_list = {"class": ""}
         for group in GroupActivity.query.filter_by(activity_id=self.activity_id).all():
             if group_activity_list["class"]:
                 group_activity_list["class"] += "," + str(group.class_id)
