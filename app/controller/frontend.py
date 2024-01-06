@@ -32,4 +32,6 @@ def create_activity():
 @fe_bp.route('/list_activity')
 @login_required
 def list_activity():
-    return render_template('list_activity.html', env_name=app.config.ENV_NAME)
+    user = UserService(current_user.id)
+    user = user.get_user_info()
+    return render_template('list_activity.html', env_name=app.config.ENV_NAME, username=user.username)
